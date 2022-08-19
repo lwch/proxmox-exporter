@@ -1,0 +1,7 @@
+listen: 8080
+
+api:
+  url: https://localhost:8006
+  # create token from web => datacenter => permissions => api tokens
+  user: root@pam!name
+  token: token
