@@ -1,0 +1,3 @@
+#!/bin/sh
+./build
+./bin/exporter -conf conf/exporter.yaml
