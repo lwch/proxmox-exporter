@@ -2,6 +2,7 @@ package exporter
 
 import (
 	"exporter/proxmox"
+	"fmt"
 	"sync"
 	"time"
 
@@ -12,64 +13,44 @@ import (
 // Exporter exporter struct
 type Exporter struct {
 	sync.RWMutex
-	cli   *proxmox.Client
-	nodes map[string]*nodeExporter
+	cli  *proxmox.Client
+	node *nodeExporter
+}
+
+func getNode(cli *proxmox.Client, exp *Exporter) *nodeExporter {
+	const maxCount = 10
+	for i := 0; i < maxCount; i++ {
+		status, err := cli.ClusterStatus()
+		if err != nil {
+			logging.Warning("get cluster/status %d times: %v", i+1, err)
+			time.Sleep(time.Second)
+			continue
+		}
+		for _, st := range status {
+			if st.Type != proxmox.ResourceNode {
+				continue
+			}
+			if st.Local != 0 {
+				return newNodeExporter(exp, st.Name)
+			}
+		}
+		logging.Warning("get cluster/status %d times...", i+1)
+		time.Sleep(time.Second)
+	}
+	panic(fmt.Sprintf("get cluster/status more than %d times", maxCount))
 }
 
 // New create exporter
 func New(cli *proxmox.Client) *Exporter {
-	exp := &Exporter{
-		cli:   cli,
-		nodes: make(map[string]*nodeExporter),
-	}
-	go exp.collectNodes()
+	exp := &Exporter{cli: cli}
+	exp.node = getNode(cli, exp)
 	return exp
 }
 
-func (exp *Exporter) collectNodes() {
-	tk := time.NewTicker(10 * time.Second)
-	get := func() {
-		nodes, err := exp.cli.ClusterResources(proxmox.ResourceNode)
-		if err != nil {
-			logging.Error("can not get node resource: %v", err)
-			return
-		}
-		exp.Lock()
-		defer exp.Unlock()
-		for _, node := range nodes {
-			if _, ok := exp.nodes[node.Node]; !ok {
-				exp.nodes[node.Node] = newNodeExporter(exp, node.Node)
-			}
-		}
-	}
-	for {
-		get()
-		<-tk.C
-	}
-}
-
 func (exp *Exporter) Describe(ch chan<- *prometheus.Desc) {
-	nodes := make([]*nodeExporter, 0, len(exp.nodes))
-	exp.RLock()
-	for _, node := range exp.nodes {
-		nodes = append(nodes, node)
-	}
-	exp.RUnlock()
-
-	for _, node := range nodes {
-		node.Describe(ch)
-	}
+	exp.node.Describe(ch)
 }
 
 func (exp *Exporter) Collect(ch chan<- prometheus.Metric) {
-	nodes := make([]*nodeExporter, 0, len(exp.nodes))
-	exp.RLock()
-	for _, node := range exp.nodes {
-		nodes = append(nodes, node)
-	}
-	exp.RUnlock()
-
-	for _, node := range nodes {
-		node.Collect(ch)
-	}
+	exp.node.Collect(ch)
 }

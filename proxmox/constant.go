@@ -13,13 +13,14 @@ const (
 	ResourceQemu    ResourceType = "qemu"
 	ResourceLxc     ResourceType = "lxc"
 	ResourceOpenvz  ResourceType = "openvz"
+	ResourceCluster ResourceType = "cluster"
 )
 
 // Status resource status
-type Status string
+type ResourceStatus string
 
 const (
-	StatusRunning   Status = "running"
-	StatusStopped   Status = "stopped"
-	StatusAvailable Status = "available"
+	StatusRunning   ResourceStatus = "running"
+	StatusStopped   ResourceStatus = "stopped"
+	StatusAvailable ResourceStatus = "available"
 )

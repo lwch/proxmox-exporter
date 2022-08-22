@@ -2,6 +2,7 @@ package conf
 
 import (
 	"exporter/proxmox"
+	"fmt"
 	"os"
 	"time"
 
@@ -24,7 +25,6 @@ func Load(dir string) *Configure {
 	var cfg struct {
 		Listen uint16 `yaml:"listen"`
 		Api    struct {
-			Url   string `yaml:"url"`
 			User  string `yaml:"user"`
 			Token string `yaml:"token"`
 		} `yaml:"api"`
@@ -32,9 +32,14 @@ func Load(dir string) *Configure {
 
 	runtime.Assert(yaml.NewDecoder(f).Decode(&cfg))
 
+	ip, ok := os.LookupEnv("PROXMOX_IP")
+	if !ok {
+		ip = "127.0.0.1"
+	}
+
 	return &Configure{
 		Listen: cfg.Listen,
-		Cli: proxmox.New(cfg.Api.Url,
+		Cli: proxmox.New(fmt.Sprintf("https://%s:8006", ip),
 			cfg.Api.User, cfg.Api.Token, 5*time.Second),
 	}
 }

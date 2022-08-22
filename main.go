@@ -24,7 +24,7 @@ func main() {
 	cfg := conf.Load(*cf)
 
 	// cfg.Cli.SetDebug(true)
-	// fmt.Println(cfg.Cli.ClusterTasks())
+	// fmt.Println(cfg.Cli.ClusterStatus())
 
 	exp := exporter.New(cfg.Cli)
 

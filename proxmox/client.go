@@ -50,7 +50,7 @@ func (cli *Client) SetDebug(v bool) {
 
 // get send get request
 func (cli *Client) get(uri string, args url.Values, value any) error {
-	url := fmt.Sprintf("%s/api2/json/"+uri, cli.url)
+	url := fmt.Sprintf("%s/api2/json"+uri, cli.url)
 	enc := args.Encode()
 	if len(enc) > 0 {
 		url += "?" + enc
