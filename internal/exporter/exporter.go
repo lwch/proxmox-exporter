@@ -34,9 +34,13 @@ func (exp *Exporter) collectNodes() {
 			logging.Error("can not get node resource: %v", err)
 			return
 		}
-		_ = nodes
 		exp.Lock()
 		defer exp.Unlock()
+		for _, node := range nodes {
+			if _, ok := exp.nodes[node.Node]; !ok {
+				exp.nodes[node.Node] = newNodeExporter(exp, node.Node)
+			}
+		}
 	}
 	for {
 		get()
@@ -45,7 +49,27 @@ func (exp *Exporter) collectNodes() {
 }
 
 func (exp *Exporter) Describe(ch chan<- *prometheus.Desc) {
+	nodes := make([]*nodeExporter, 0, len(exp.nodes))
+	exp.RLock()
+	for _, node := range exp.nodes {
+		nodes = append(nodes, node)
+	}
+	exp.RUnlock()
+
+	for _, node := range nodes {
+		node.Describe(ch)
+	}
 }
 
 func (exp *Exporter) Collect(ch chan<- prometheus.Metric) {
+	nodes := make([]*nodeExporter, 0, len(exp.nodes))
+	exp.RLock()
+	for _, node := range exp.nodes {
+		nodes = append(nodes, node)
+	}
+	exp.RUnlock()
+
+	for _, node := range nodes {
+		node.Collect(ch)
+	}
 }
