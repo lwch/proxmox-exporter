@@ -14,6 +14,7 @@ import (
 
 func main() {
 	cf := flag.String("conf", "", "configure file dir")
+	debug := flag.Bool("debug", false, "run in debug modes")
 	flag.Parse()
 
 	if len(*cf) == 0 {
@@ -21,7 +22,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	cfg := conf.Load(*cf)
+	cfg := conf.Load(*cf, *debug)
 
 	// cfg.Cli.SetDebug(true)
 	// fmt.Println(cfg.Cli.ClusterStatus())

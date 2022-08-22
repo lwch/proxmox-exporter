@@ -17,7 +17,7 @@ type Configure struct {
 }
 
 // Load load configure file
-func Load(dir string) *Configure {
+func Load(dir string, debug bool) *Configure {
 	f, err := os.Open(dir)
 	runtime.Assert(err)
 	defer f.Close()
@@ -32,9 +32,13 @@ func Load(dir string) *Configure {
 
 	runtime.Assert(yaml.NewDecoder(f).Decode(&cfg))
 
-	ip, ok := os.LookupEnv("PROXMOX_IP")
-	if !ok {
-		ip = "127.0.0.1"
+	ip := "127.0.0.1"
+	if debug {
+		var ok bool
+		ip, ok = os.LookupEnv("PROXMOX_IP")
+		if !ok {
+			ip = "127.0.0.1"
+		}
 	}
 
 	return &Configure{
