@@ -5,8 +5,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/http/httputil"
 	"net/url"
 	"time"
+
+	"github.com/lwch/logging"
 )
 
 // Client proxmox client
@@ -14,6 +17,7 @@ type Client struct {
 	cli       *http.Client
 	url       string
 	authToken string
+	debug     bool
 }
 
 // New create client
@@ -39,6 +43,11 @@ func New(url, user, token string, timeout time.Duration) *Client {
 	}
 }
 
+// SetDebug set debug flag
+func (cli *Client) SetDebug(v bool) {
+	cli.debug = v
+}
+
 // get send get request
 func (cli *Client) get(uri string, args url.Values, value any) error {
 	url := fmt.Sprintf("%s/api2/json/"+uri, cli.url)
@@ -56,5 +65,9 @@ func (cli *Client) get(uri string, args url.Values, value any) error {
 		return err
 	}
 	defer rep.Body.Close()
+	if cli.debug {
+		data, _ := httputil.DumpResponse(rep, true)
+		logging.Info(string(data))
+	}
 	return json.NewDecoder(rep.Body).Decode(value)
 }

@@ -6,6 +6,7 @@ import (
 	"github.com/lwch/runtime"
 )
 
+// Resource resource info
 type Resource struct {
 	ID        string        `json:"id"`
 	Name      string        `json:"name"`
@@ -26,8 +27,8 @@ type Resource struct {
 	NetOut    runtime.Bytes `json:"netout"`
 }
 
-// Resources get resources
-func (cli *Client) Resources(t ResourceType) ([]Resource, error) {
+// ClusterResources get resources of cluster
+func (cli *Client) ClusterResources(t ResourceType) ([]Resource, error) {
 	var data struct {
 		Data []Resource `json:"data"`
 	}
@@ -35,9 +36,18 @@ func (cli *Client) Resources(t ResourceType) ([]Resource, error) {
 	if t != ResourceNone {
 		args.Set("type", string(t))
 	}
-	err := cli.get("/cluster/resources", nil, &data)
+	err := cli.get("/cluster/resources", args, &data)
 	if err != nil {
 		return nil, err
 	}
 	return data.Data, nil
+}
+
+// ClusterTasks get tasks of cluster
+func (cli *Client) ClusterTasks() ([]Task, error) {
+	var data struct {
+		Data []Task `json:"data"`
+	}
+	err := cli.get("/cluster/tasks", nil, &data)
+	return data.Data, err
 }

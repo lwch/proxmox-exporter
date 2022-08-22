@@ -2,12 +2,14 @@ package main
 
 import (
 	"exporter/internal/conf"
-	"exporter/proxmox"
+	"exporter/internal/exporter"
 	"flag"
 	"fmt"
+	"net/http"
 	"os"
 
-	"github.com/lwch/runtime"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 func main() {
@@ -21,7 +23,15 @@ func main() {
 
 	cfg := conf.Load(*cf)
 
-	list, err := cfg.Cli.Resources(proxmox.ResourceVM)
-	runtime.Assert(err)
-	fmt.Println(list)
+	// cfg.Cli.SetDebug(true)
+	// fmt.Println(cfg.Cli.ClusterTasks())
+
+	exp := exporter.New(cfg.Cli)
+
+	reg := prometheus.NewRegistry()
+	reg.MustRegister(exp)
+	http.Handle("/metrics", promhttp.HandlerFor(
+		reg, promhttp.HandlerOpts{Registry: reg},
+	))
+	http.ListenAndServe(fmt.Sprintf(":%d", cfg.Listen), nil)
 }
