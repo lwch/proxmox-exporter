@@ -292,6 +292,12 @@ func (exp *nodeExporter) updateStorage() {
 	}
 	for _, storage := range storages {
 		labels := make(prometheus.Labels)
+		labels["content_vztmpl"] = "false"
+		labels["content_iso"] = "false"
+		labels["content_backup"] = "false"
+		labels["content_snippets"] = "false"
+		labels["content_rootdir"] = "false"
+		labels["content_images"] = "false"
 		for _, content := range storage.Content {
 			switch content {
 			case proxmox.ContentTemplate:
