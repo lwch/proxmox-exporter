@@ -2,6 +2,7 @@ package exporter
 
 import (
 	"exporter/proxmox"
+	"fmt"
 
 	"github.com/lwch/logging"
 	"github.com/prometheus/client_golang/prometheus"
@@ -40,9 +41,13 @@ func (exp *vmExporter) build() {
 		Namespace: namespace,
 		Name:      "info",
 		Help: `vm info, labels:
-type: lxc or qemu`,
+type: lxc or qemu
+uptime: uptime
+core: cpu cores
+memory: max memory bytes
+disk: max disk bytes`,
 		ConstLabels: constLabels,
-	}, append(labels, "type"))
+	}, append(labels, "type", "uptime", "core", "memory", "disk"))
 	// cpu
 	exp.cpuUsage = prometheus.NewGaugeVec(prometheus.GaugeOpts{
 		Namespace:   namespace,
@@ -102,7 +107,13 @@ func (exp *vmExporter) updateStatus() {
 		}
 		// info
 		exp.uptime.With(labels).Set(float64(vm.Uptime))
-		exp.info.With(merge(labels, prometheus.Labels{"type": string(vm.Type)})).Set(1)
+		exp.info.With(merge(labels, prometheus.Labels{
+			"type":   string(vm.Type),
+			"uptime": fmt.Sprintf("%d", vm.Uptime),
+			"core":   fmt.Sprintf("%d", vm.MaxCpu),
+			"memory": fmt.Sprintf("%d", vm.MaxMemory),
+			"disk":   fmt.Sprintf("%d", vm.MaxDisk),
+		})).Set(1)
 		// cpu
 		exp.cpuUsage.With(labels).Set(vm.Cpu)
 		exp.cpuTotal.With(labels).Set(float64(vm.MaxCpu))
