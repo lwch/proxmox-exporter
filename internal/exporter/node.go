@@ -198,9 +198,10 @@ type: storage type`,
 	}, []string{"storage_name"})
 	// sensors
 	exp.sensors = prometheus.NewGaugeVec(prometheus.GaugeOpts{
-		Namespace: namespace,
-		Name:      "sensors",
-		Help:      "use sensors command to get device temperature and cpu fan speed",
+		Namespace:   namespace,
+		Name:        "sensors",
+		Help:        "use sensors command to get device temperature and cpu fan speed",
+		ConstLabels: labels,
 	}, []string{"chip_name", "label_name", "feature_name"})
 }
 
