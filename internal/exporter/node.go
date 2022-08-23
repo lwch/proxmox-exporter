@@ -17,7 +17,7 @@ type nodeExporter struct {
 	vm     *vmExporter
 
 	// stats
-	upTime         prometheus.Gauge
+	uptime         prometheus.Gauge
 	info           *prometheus.GaugeVec
 	cpuUsage       prometheus.Gauge
 	cpuLoadAverage *prometheus.GaugeVec
@@ -39,6 +39,7 @@ type nodeExporter struct {
 	sensors        *prometheus.GaugeVec
 	netin          prometheus.Gauge
 	netout         prometheus.Gauge
+	// TODO: nvme and ssd metrics
 }
 
 func newNodeExporter(parent *Exporter, name string) *nodeExporter {
@@ -56,7 +57,7 @@ func (exp *nodeExporter) build() {
 	labels := prometheus.Labels{"node_name": exp.name}
 
 	// online
-	exp.upTime = prometheus.NewGauge(prometheus.GaugeOpts{
+	exp.uptime = prometheus.NewGauge(prometheus.GaugeOpts{
 		Namespace:   namespace,
 		Name:        "uptime",
 		Help:        "node uptime",
@@ -223,7 +224,7 @@ type: storage type`,
 
 func (exp *nodeExporter) Describe(ch chan<- *prometheus.Desc) {
 	// online
-	exp.upTime.Describe(ch)
+	exp.uptime.Describe(ch)
 	exp.info.Describe(ch)
 	// cpu
 	exp.cpuUsage.Describe(ch)
@@ -262,7 +263,7 @@ func (exp *nodeExporter) Collect(ch chan<- prometheus.Metric) {
 	exp.updateStatus()
 
 	// online
-	exp.upTime.Collect(ch)
+	exp.uptime.Collect(ch)
 	exp.info.Collect(ch)
 	// cpu
 	exp.cpuUsage.Collect(ch)
@@ -311,7 +312,7 @@ func (exp *nodeExporter) updateStatus() {
 }
 
 func (exp *nodeExporter) updateInfo(status proxmox.NodeStatus) {
-	exp.upTime.Set(float64(status.Uptime))
+	exp.uptime.Set(float64(status.Uptime))
 	exp.info.With(prometheus.Labels{
 		"model":          status.CpuInfo.Model,
 		"sockets":        fmt.Sprintf("%d", status.CpuInfo.Sockets),
