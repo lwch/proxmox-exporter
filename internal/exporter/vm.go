@@ -47,7 +47,7 @@ core: cpu cores
 memory: max memory bytes
 disk: max disk bytes`,
 		ConstLabels: constLabels,
-	}, append(labels, "type", "uptime", "cores", "memory", "disk"))
+	}, append(labels, "type", "uptime", "core", "memory", "disk"))
 	// cpu
 	exp.cpuUsage = prometheus.NewGaugeVec(prometheus.GaugeOpts{
 		Namespace:   namespace,
