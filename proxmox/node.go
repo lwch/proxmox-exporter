@@ -80,3 +80,26 @@ func (cli *Client) NodeTasks(name string, start, limit int) (TaskInfo, error) {
 	err := cli.get(fmt.Sprintf("/nodes/%s/tasks", name), args, &info)
 	return info, err
 }
+
+// NodeStorage node storage
+type NodeStorage struct {
+	Content   StorageContents `json:"content"`       // Allowed storage content types
+	Storage   string          `json:"storage"`       // The storage identifier
+	Type      string          `json:"type"`          // Storage type, TODO: struct
+	Active    int             `json:"active"`        // Set when storage is accessible
+	Enabled   int             `json:"enabled"`       // Set when storage is enabled (not disabled)
+	Shared    int             `json:"shared"`        // Shared flag from storage configuration
+	Used      runtime.Bytes   `json:"used"`          // Used storage space in bytes
+	Available runtime.Bytes   `json:"avail"`         // Available storage space in bytes
+	Total     runtime.Bytes   `json:"total"`         // Total storage space in bytes
+	Ratio     float64         `json:"used_fraction"` // Used fraction (used/total)
+}
+
+// NodeStorage get storage list of node
+func (cli *Client) NodeStorage(name string) ([]NodeStorage, error) {
+	var data struct {
+		Data []NodeStorage `json:"data"`
+	}
+	err := cli.get(fmt.Sprintf("/nodes/%s/storage", name), nil, &data)
+	return data.Data, err
+}

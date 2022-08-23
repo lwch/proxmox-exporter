@@ -25,7 +25,7 @@ func main() {
 	cfg := conf.Load(*cf, *debug)
 
 	// cfg.Cli.SetDebug(true)
-	// fmt.Println(cfg.Cli.ClusterStatus())
+	// fmt.Println(cfg.Cli.NodeStorage("pve"))
 
 	exp := exporter.New(cfg.Cli)
 
