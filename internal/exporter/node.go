@@ -4,11 +4,11 @@ import (
 	"exporter/proxmox"
 	"exporter/sensors"
 	"fmt"
+	"sort"
 	"strconv"
 
 	"github.com/lwch/logging"
 	"github.com/prometheus/client_golang/prometheus"
-	"github.com/shirou/gopsutil/v3/net"
 )
 
 type nodeExporter struct {
@@ -402,7 +402,8 @@ func (exp *nodeExporter) updateStorage() {
 func (exp *nodeExporter) updateSensors() {
 	sensors, err := sensors.Get()
 	if err != nil {
-		logging.Error("get sensors")
+		logging.Error("get sensors: %v", err)
+		return
 	}
 	for _, sensor := range sensors {
 		labels := prometheus.Labels{"chip_name": sensor.Chip}
@@ -417,33 +418,16 @@ func (exp *nodeExporter) updateSensors() {
 }
 
 func (exp *nodeExporter) updateNetwork() {
-	interfaces, err := net.Interfaces()
+	datas, err := exp.parent.cli.NodeRrdData(exp.name)
 	if err != nil {
-		logging.Error("get interface list: %v", err)
+		logging.Error("get node rrddata: %v", err)
 		return
 	}
-	skip := make(map[string]bool)
-	for _, intf := range interfaces {
-		for _, flag := range intf.Flags {
-			if flag == "loopback" {
-				skip[intf.Name] = true
-				break
-			}
-		}
+	sort.Slice(datas, func(i, j int) bool {
+		return datas[i].Time > datas[j].Time
+	})
+	if len(datas) > 0 {
+		exp.netin.Set(datas[0].NetIn)
+		exp.netout.Set(datas[0].NetOut)
 	}
-	counters, err := net.IOCounters(true)
-	if err != nil {
-		logging.Error("get iocounters: %v", err)
-		return
-	}
-	var netin, netout uint64
-	for _, counter := range counters {
-		if skip[counter.Name] {
-			continue
-		}
-		netin += counter.BytesRecv
-		netout += counter.BytesSent
-	}
-	exp.netin.Set(float64(netin))
-	exp.netout.Set(float64(netout))
 }

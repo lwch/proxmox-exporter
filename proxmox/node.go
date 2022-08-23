@@ -103,3 +103,31 @@ func (cli *Client) NodeStorage(name string) ([]NodeStorage, error) {
 	err := cli.get(fmt.Sprintf("/nodes/%s/storage", name), nil, &data)
 	return data.Data, err
 }
+
+// NodeRrdData node rrddata
+type NodeRrdData struct {
+	Time        int64   `json:"time"`
+	Cpu         float64 `json:"cpu"`
+	MaxCpu      float64 `json:"maxcpu"`
+	LoadAverage float64 `json:"loadavg"`
+	MemoryUsed  float64 `json:"memused"`
+	MemoryTotal float64 `json:"memtotal"`
+	SwapUsed    float64 `json:"swapused"`
+	SwapTotal   float64 `json:"swaptotal"`
+	RootUsed    float64 `json:"rootused"`
+	RootTotal   float64 `json:"roottotal"`
+	NetIn       float64 `json:"netin"`
+	NetOut      float64 `json:"netout"`
+	IoWait      float64 `json:"iowait"`
+}
+
+// NodeRrdData get rrddata of node from hour
+func (cli *Client) NodeRrdData(name string) ([]NodeRrdData, error) {
+	args := make(url.Values)
+	args.Set("timeframe", "hour")
+	var data struct {
+		Data []NodeRrdData `json:"data"`
+	}
+	err := cli.get(fmt.Sprintf("/nodes/%s/rrddata", name), args, &data)
+	return data.Data, err
+}
