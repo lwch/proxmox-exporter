@@ -358,6 +358,6 @@ func (exp *nodeExporter) updateStorage() {
 		exp.storageUsed.With(labels).Set(float64(storage.Used))
 		exp.storageFree.With(labels).Set(float64(storage.Available))
 		exp.storageTotal.With(labels).Set(float64(storage.Total))
-		exp.storageTotal.With(labels).Set(storage.Ratio * 100.)
+		exp.storageUsage.With(labels).Set(storage.Ratio * 100.)
 	}
 }
