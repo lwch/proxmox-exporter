@@ -13,6 +13,9 @@ type vmExporter struct {
 	// stats
 	uptime *prometheus.GaugeVec
 	info   *prometheus.GaugeVec
+	// cpu
+	cpuUsage *prometheus.GaugeVec
+	cpuTotal *prometheus.GaugeVec
 }
 
 func newVmExporter(parent *nodeExporter) *vmExporter {
@@ -39,12 +42,26 @@ func (exp *vmExporter) build() {
 		Help: `vm info, labels:
 type: lxc or qemu`,
 	}, append(labels, "type"))
+	// cpu
+	exp.cpuUsage = prometheus.NewGaugeVec(prometheus.GaugeOpts{
+		Namespace: namespace,
+		Name:      "cpu_usage",
+		Help:      "vm cpu usage ratio(precent)",
+	}, labels)
+	exp.cpuTotal = prometheus.NewGaugeVec(prometheus.GaugeOpts{
+		Namespace: namespace,
+		Name:      "cpu_total",
+		Help:      "vm max cpu core count",
+	}, labels)
 }
 
 func (exp *vmExporter) Describe(ch chan<- *prometheus.Desc) {
 	// info
 	exp.uptime.Describe(ch)
 	exp.info.Describe(ch)
+	// cpu
+	exp.cpuUsage.Describe(ch)
+	exp.cpuTotal.Describe(ch)
 }
 
 func (exp *vmExporter) Collect(ch chan<- prometheus.Metric) {
@@ -53,6 +70,9 @@ func (exp *vmExporter) Collect(ch chan<- prometheus.Metric) {
 	// info
 	exp.uptime.Collect(ch)
 	exp.info.Collect(ch)
+	// cpu
+	exp.cpuUsage.Collect(ch)
+	exp.cpuTotal.Collect(ch)
 }
 
 func (exp *vmExporter) updateStatus() {
@@ -80,5 +100,8 @@ func (exp *vmExporter) updateStatus() {
 		// info
 		exp.uptime.With(labels).Set(float64(vm.Uptime))
 		exp.info.With(merge(labels, prometheus.Labels{"type": string(vm.Type)})).Set(1)
+		// cpu
+		exp.cpuUsage.With(labels).Set(vm.Cpu)
+		exp.cpuTotal.With(labels).Set(float64(vm.MaxCpu))
 	}
 }
