@@ -99,6 +99,7 @@ func (exp *vmExporter) updateStatus() {
 		}
 		return ret
 	}
+	exp.info.Reset()
 	for _, vm := range vms {
 		labels := prometheus.Labels{
 			"vm_id":     vm.ID,
