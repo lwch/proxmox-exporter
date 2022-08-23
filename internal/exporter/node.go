@@ -8,6 +8,7 @@ import (
 
 	"github.com/lwch/logging"
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/shirou/gopsutil/v3/net"
 )
 
 type nodeExporter struct {
@@ -36,6 +37,8 @@ type nodeExporter struct {
 	storageTotal   *prometheus.GaugeVec
 	storageUsage   *prometheus.GaugeVec
 	sensors        *prometheus.GaugeVec
+	netin          prometheus.Gauge
+	netout         prometheus.Gauge
 }
 
 func newNodeExporter(parent *Exporter, name string) *nodeExporter {
@@ -203,6 +206,19 @@ type: storage type`,
 		Help:        "use sensors command to get device temperature and cpu fan speed",
 		ConstLabels: labels,
 	}, []string{"chip_name", "label_name", "feature_name"})
+	// network
+	exp.netin = prometheus.NewGauge(prometheus.GaugeOpts{
+		Namespace:   namespace,
+		Name:        "netin",
+		Help:        "node received bytes",
+		ConstLabels: labels,
+	})
+	exp.netout = prometheus.NewGauge(prometheus.GaugeOpts{
+		Namespace:   namespace,
+		Name:        "netout",
+		Help:        "node sent bytes",
+		ConstLabels: labels,
+	})
 }
 
 func (exp *nodeExporter) Describe(ch chan<- *prometheus.Desc) {
@@ -233,6 +249,9 @@ func (exp *nodeExporter) Describe(ch chan<- *prometheus.Desc) {
 	exp.storageUsage.Describe(ch)
 	// sensors
 	exp.sensors.Describe(ch)
+	// network
+	exp.netin.Describe(ch)
+	exp.netout.Describe(ch)
 
 	// vm describe
 	exp.vm.Describe(ch)
@@ -269,6 +288,9 @@ func (exp *nodeExporter) Collect(ch chan<- prometheus.Metric) {
 	exp.storageUsage.Collect(ch)
 	// sensors
 	exp.sensors.Collect(ch)
+	// network
+	exp.netin.Collect(ch)
+	exp.netout.Collect(ch)
 
 	// vm collect
 	exp.vm.Collect(ch)
@@ -284,7 +306,8 @@ func (exp *nodeExporter) updateStatus() {
 	exp.updateCpu(status)
 	exp.updateMemory(status)
 	exp.updateDisk(status)
-	exp.updateTemperature()
+	exp.updateSensors()
+	exp.updateNetwork()
 }
 
 func (exp *nodeExporter) updateInfo(status proxmox.NodeStatus) {
@@ -376,7 +399,7 @@ func (exp *nodeExporter) updateStorage() {
 	}
 }
 
-func (exp *nodeExporter) updateTemperature() {
+func (exp *nodeExporter) updateSensors() {
 	sensors, err := sensors.Get()
 	if err != nil {
 		logging.Error("get sensors")
@@ -391,4 +414,36 @@ func (exp *nodeExporter) updateTemperature() {
 			}
 		}
 	}
+}
+
+func (exp *nodeExporter) updateNetwork() {
+	interfaces, err := net.Interfaces()
+	if err != nil {
+		logging.Error("get interface list: %v", err)
+		return
+	}
+	skip := make(map[string]bool)
+	for _, intf := range interfaces {
+		for _, flag := range intf.Flags {
+			if flag == "loopback" {
+				skip[intf.Name] = true
+				break
+			}
+		}
+	}
+	counters, err := net.IOCounters(true)
+	if err != nil {
+		logging.Error("get iocounters: %v", err)
+		return
+	}
+	var netin, netout uint64
+	for _, counter := range counters {
+		if skip[counter.Name] {
+			continue
+		}
+		netin += counter.BytesRecv
+		netout += counter.BytesSent
+	}
+	exp.netin.Set(float64(netin))
+	exp.netout.Set(float64(netout))
 }
