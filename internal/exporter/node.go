@@ -2,6 +2,7 @@ package exporter
 
 import (
 	"exporter/proxmox"
+	"exporter/sensors"
 	"fmt"
 	"strconv"
 
@@ -34,6 +35,7 @@ type nodeExporter struct {
 	storageFree    *prometheus.GaugeVec
 	storageTotal   *prometheus.GaugeVec
 	storageUsage   *prometheus.GaugeVec
+	sensors        *prometheus.GaugeVec
 }
 
 func newNodeExporter(parent *Exporter, name string) *nodeExporter {
@@ -194,6 +196,12 @@ type: storage type`,
 		Help:        "node storage usage ratio(precent)",
 		ConstLabels: labels,
 	}, []string{"storage_name"})
+	// sensors
+	exp.sensors = prometheus.NewGaugeVec(prometheus.GaugeOpts{
+		Namespace: namespace,
+		Name:      "sensors",
+		Help:      "use sensors command to get device temperature and cpu fan speed",
+	}, []string{"chip_name", "label_name", "feature_name"})
 }
 
 func (exp *nodeExporter) Describe(ch chan<- *prometheus.Desc) {
@@ -222,6 +230,8 @@ func (exp *nodeExporter) Describe(ch chan<- *prometheus.Desc) {
 	exp.storageFree.Describe(ch)
 	exp.storageTotal.Describe(ch)
 	exp.storageUsage.Describe(ch)
+	// sensors
+	exp.sensors.Describe(ch)
 
 	// vm describe
 	exp.vm.Describe(ch)
@@ -256,6 +266,8 @@ func (exp *nodeExporter) Collect(ch chan<- prometheus.Metric) {
 	exp.storageFree.Collect(ch)
 	exp.storageTotal.Collect(ch)
 	exp.storageUsage.Collect(ch)
+	// sensors
+	exp.sensors.Collect(ch)
 
 	// vm collect
 	exp.vm.Collect(ch)
@@ -264,13 +276,14 @@ func (exp *nodeExporter) Collect(ch chan<- prometheus.Metric) {
 func (exp *nodeExporter) updateStatus() {
 	status, err := exp.parent.cli.NodeStatus(exp.name)
 	if err != nil {
-		logging.Error("get node [%s] status: %v", exp.name, err)
+		logging.Error("get node status: %v", err)
 		return
 	}
 	exp.updateInfo(status)
 	exp.updateCpu(status)
 	exp.updateMemory(status)
 	exp.updateDisk(status)
+	exp.updateTemperature()
 }
 
 func (exp *nodeExporter) updateInfo(status proxmox.NodeStatus) {
@@ -323,7 +336,7 @@ func (exp *nodeExporter) updateDisk(status proxmox.NodeStatus) {
 func (exp *nodeExporter) updateStorage() {
 	storages, err := exp.parent.cli.NodeStorage(exp.name)
 	if err != nil {
-		logging.Error("get node [%s] storage: %v", exp.name, err)
+		logging.Error("get node storage: %v", err)
 		return
 	}
 	for _, storage := range storages {
@@ -359,5 +372,22 @@ func (exp *nodeExporter) updateStorage() {
 		exp.storageFree.With(labels).Set(float64(storage.Available))
 		exp.storageTotal.With(labels).Set(float64(storage.Total))
 		exp.storageUsage.With(labels).Set(storage.Ratio * 100.)
+	}
+}
+
+func (exp *nodeExporter) updateTemperature() {
+	sensors, err := sensors.Get()
+	if err != nil {
+		logging.Error("get sensors")
+	}
+	for _, sensor := range sensors {
+		labels := prometheus.Labels{"chip_name": sensor.Chip}
+		for label, value := range sensor.Features {
+			labels["label_name"] = label
+			for feature, value := range value {
+				labels["feature_name"] = feature
+				exp.sensors.With(labels).Set(value)
+			}
+		}
 	}
 }

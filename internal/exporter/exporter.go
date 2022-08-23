@@ -31,6 +31,7 @@ func getNode(cli *proxmox.Client, exp *Exporter) *nodeExporter {
 				continue
 			}
 			if st.Local != 0 {
+				logging.Info("current node name: %s", st.Name)
 				return newNodeExporter(exp, st.Name)
 			}
 		}
