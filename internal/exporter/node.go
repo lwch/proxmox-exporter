@@ -157,14 +157,14 @@ storage: storage name
 type: storage type`,
 		ConstLabels: labels,
 	}, []string{
+		"storage",
+		"type",
 		"content_vztmpl",
 		"content_iso",
 		"content_backup",
 		"content_snippets",
 		"content_rootdir",
 		"content_images",
-		"storage",
-		"type",
 	})
 }
 
