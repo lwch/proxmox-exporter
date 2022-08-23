@@ -14,7 +14,6 @@ type nodeExporter struct {
 	vm     *vmExporter
 
 	// stats
-	up             prometheus.Gauge
 	upTime         prometheus.Gauge
 	info           *prometheus.GaugeVec
 	cpuUsage       prometheus.Gauge
@@ -46,12 +45,6 @@ func (exp *nodeExporter) build() {
 	labels := prometheus.Labels{"node_name": exp.name}
 
 	// online
-	exp.up = prometheus.NewGauge(prometheus.GaugeOpts{
-		Namespace:   namespace,
-		Name:        "up",
-		Help:        "node is online",
-		ConstLabels: labels,
-	})
 	exp.upTime = prometheus.NewGauge(prometheus.GaugeOpts{
 		Namespace:   namespace,
 		Name:        "uptime",
@@ -157,7 +150,6 @@ pve_version: proxmox version`,
 
 func (exp *nodeExporter) Describe(ch chan<- *prometheus.Desc) {
 	// online
-	exp.up.Describe(ch)
 	exp.upTime.Describe(ch)
 	exp.info.Describe(ch)
 	// cpu
@@ -187,7 +179,6 @@ func (exp *nodeExporter) Collect(ch chan<- prometheus.Metric) {
 	exp.updateStatus()
 
 	// online
-	exp.up.Collect(ch)
 	exp.upTime.Collect(ch)
 	exp.info.Collect(ch)
 	// cpu
@@ -216,11 +207,9 @@ func (exp *nodeExporter) updateStatus() {
 	// online
 	status, err := exp.parent.cli.NodeStatus(exp.name)
 	if err != nil {
-		exp.up.Set(0)
 		logging.Error("get node [%s] status: %v", exp.name, err)
 		return
 	}
-	exp.up.Set(1)
 	exp.upTime.Set(float64(status.Uptime))
 	exp.info.With(prometheus.Labels{
 		"model":          status.CpuInfo.Model,
