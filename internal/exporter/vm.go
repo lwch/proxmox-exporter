@@ -41,17 +41,20 @@ func (exp *vmExporter) build() {
 		Name:      "info",
 		Help: `vm info, labels:
 type: lxc or qemu`,
+		ConstLabels: constLabels,
 	}, append(labels, "type"))
 	// cpu
 	exp.cpuUsage = prometheus.NewGaugeVec(prometheus.GaugeOpts{
-		Namespace: namespace,
-		Name:      "cpu_usage",
-		Help:      "vm cpu usage ratio(precent)",
+		Namespace:   namespace,
+		Name:        "cpu_usage",
+		Help:        "vm cpu usage ratio(precent)",
+		ConstLabels: constLabels,
 	}, labels)
 	exp.cpuTotal = prometheus.NewGaugeVec(prometheus.GaugeOpts{
-		Namespace: namespace,
-		Name:      "cpu_total",
-		Help:      "vm max cpu core count",
+		Namespace:   namespace,
+		Name:        "cpu_total",
+		Help:        "vm max cpu core count",
+		ConstLabels: constLabels,
 	}, labels)
 }
 
