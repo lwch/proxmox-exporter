@@ -30,6 +30,10 @@ type nodeExporter struct {
 	rootfsTotal    prometheus.Gauge
 	ioWait         prometheus.Gauge
 	storageInfo    *prometheus.GaugeVec
+	storageUsed    *prometheus.GaugeVec
+	storageFree    *prometheus.GaugeVec
+	storageTotal   *prometheus.GaugeVec
+	storageUsage   *prometheus.GaugeVec
 }
 
 func newNodeExporter(parent *Exporter, name string) *nodeExporter {
@@ -166,6 +170,30 @@ type: storage type`,
 		"content_rootdir",
 		"content_images",
 	})
+	exp.storageUsed = prometheus.NewGaugeVec(prometheus.GaugeOpts{
+		Namespace:   namespace,
+		Name:        "storage_used",
+		Help:        "node storage used bytes",
+		ConstLabels: labels,
+	}, []string{"storage_name"})
+	exp.storageFree = prometheus.NewGaugeVec(prometheus.GaugeOpts{
+		Namespace:   namespace,
+		Name:        "storage_free",
+		Help:        "node storage free bytes",
+		ConstLabels: labels,
+	}, []string{"storage_name"})
+	exp.storageTotal = prometheus.NewGaugeVec(prometheus.GaugeOpts{
+		Namespace:   namespace,
+		Name:        "storage_total",
+		Help:        "node storage total bytes",
+		ConstLabels: labels,
+	}, []string{"storage_name"})
+	exp.storageUsage = prometheus.NewGaugeVec(prometheus.GaugeOpts{
+		Namespace:   namespace,
+		Name:        "storage_usage",
+		Help:        "node storage usage ratio(precent)",
+		ConstLabels: labels,
+	}, []string{"storage_name"})
 }
 
 func (exp *nodeExporter) Describe(ch chan<- *prometheus.Desc) {
@@ -190,6 +218,10 @@ func (exp *nodeExporter) Describe(ch chan<- *prometheus.Desc) {
 	// disk
 	exp.ioWait.Describe(ch)
 	exp.storageInfo.Describe(ch)
+	exp.storageUsed.Describe(ch)
+	exp.storageFree.Describe(ch)
+	exp.storageTotal.Describe(ch)
+	exp.storageUsage.Describe(ch)
 
 	// vm describe
 	exp.vm.Describe(ch)
@@ -220,6 +252,10 @@ func (exp *nodeExporter) Collect(ch chan<- prometheus.Metric) {
 	// disk
 	exp.ioWait.Collect(ch)
 	exp.storageInfo.Collect(ch)
+	exp.storageUsed.Collect(ch)
+	exp.storageFree.Collect(ch)
+	exp.storageTotal.Collect(ch)
+	exp.storageUsage.Collect(ch)
 
 	// vm collect
 	exp.vm.Collect(ch)
@@ -317,5 +353,11 @@ func (exp *nodeExporter) updateStorage() {
 		labels["storage"] = storage.Storage
 		labels["type"] = storage.Type
 		exp.storageInfo.With(labels).Set(1)
+
+		labels = prometheus.Labels{"storage_name": storage.Storage}
+		exp.storageUsed.With(labels).Set(float64(storage.Used))
+		exp.storageFree.With(labels).Set(float64(storage.Available))
+		exp.storageTotal.With(labels).Set(float64(storage.Total))
+		exp.storageTotal.With(labels).Set(storage.Ratio * 100.)
 	}
 }
