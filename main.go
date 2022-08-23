@@ -25,7 +25,7 @@ func main() {
 	cfg := conf.Load(*cf, *debug)
 
 	// cfg.Cli.SetDebug(true)
-	// fmt.Println(cfg.Cli.NodeRrdData("pve"))
+	// fmt.Println(cfg.Cli.ClusterResources(proxmox.ResourceVM))
 
 	exp := exporter.New(cfg.Cli)
 

@@ -24,7 +24,7 @@ func newVmExporter(parent *nodeExporter) *vmExporter {
 func (exp *vmExporter) build() {
 	const namespace = "vm"
 	constLabels := prometheus.Labels{"node_name": exp.parent.name}
-	labels := []string{"vm_id", "vm_name"}
+	labels := []string{"vm_id", "vm_name", "vm_status"}
 
 	// info
 	exp.uptime = prometheus.NewGaugeVec(prometheus.GaugeOpts{
@@ -73,8 +73,9 @@ func (exp *vmExporter) updateStatus() {
 	}
 	for _, vm := range vms {
 		labels := prometheus.Labels{
-			"vm_id":   vm.ID,
-			"vm_name": vm.Name,
+			"vm_id":     vm.ID,
+			"vm_name":   vm.Name,
+			"vm_status": string(vm.Status),
 		}
 		// info
 		exp.uptime.With(labels).Set(float64(vm.Uptime))
