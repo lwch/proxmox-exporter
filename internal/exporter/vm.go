@@ -193,12 +193,11 @@ func (exp *vmExporter) updateStatus() {
 		// info
 		exp.uptime.With(labels).Set(float64(vm.Uptime))
 		exp.info.With(merge(labels, prometheus.Labels{
-			"type":   string(vm.Type),
 			"uptime": fmt.Sprintf("%d", vm.Uptime),
 			"core":   fmt.Sprintf("%d", vm.MaxCpu),
 			"memory": fmt.Sprintf("%d", vm.MaxMemory),
 			"disk":   fmt.Sprintf("%d", vm.MaxDisk),
-		})).Set(1)
+		})).Inc()
 		// cpu
 		exp.cpuUsage.With(labels).Set(vm.Cpu)
 		exp.cpuTotal.With(labels).Set(float64(vm.MaxCpu))

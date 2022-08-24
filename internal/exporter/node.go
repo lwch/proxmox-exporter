@@ -333,7 +333,7 @@ func (exp *nodeExporter) updateInfo(status proxmox.NodeStatus) {
 		"mhz":            status.CpuInfo.Frequency,
 		"kernel_version": status.KernelVersion,
 		"pve_version":    status.PveVersion,
-	}).Set(1)
+	}).Inc()
 }
 
 func (exp *nodeExporter) updateCpu(status proxmox.NodeStatus) {
@@ -437,7 +437,7 @@ func (exp *nodeExporter) updateStorage() {
 		}
 		labels["storage"] = storage.Storage
 		labels["type"] = storage.Type
-		exp.storageInfo.With(labels).Set(1)
+		exp.storageInfo.With(labels).Inc()
 
 		labels = prometheus.Labels{"storage_name": storage.Storage}
 		exp.storageUsed.With(labels).Set(float64(storage.Used))
