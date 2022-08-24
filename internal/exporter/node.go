@@ -248,13 +248,13 @@ type: storage type`,
 	exp.smartWritten = prometheus.NewGaugeVec(prometheus.GaugeOpts{
 		Namespace:   namespace,
 		Name:        "smart_written",
-		Help:        "written bytes of smart data",
+		Help:        "written bytes of smart data(lba 512 bytes padding)",
 		ConstLabels: labels,
 	}, smartLabels)
 	exp.smartReaden = prometheus.NewGaugeVec(prometheus.GaugeOpts{
 		Namespace:   namespace,
 		Name:        "smart_readden",
-		Help:        "readden bytes of smart data",
+		Help:        "readden bytes of smart data(lba 512 bytes padding)",
 		ConstLabels: labels,
 	}, smartLabels)
 	exp.smartUsedPercent = prometheus.NewGaugeVec(prometheus.GaugeOpts{
@@ -591,9 +591,9 @@ func (exp *nodeExporter) updateSmart() {
 					}
 					exp.smartTemperature.With(labels).Set(float64(current))
 				case "Total_LBAs_Read":
-					exp.smartReaden.With(labels).Set(float64(attr.ValueRaw * 512))
+					exp.smartReaden.With(labels).Set(float64(attr.ValueRaw))
 				case "Total_LBAs_Written":
-					exp.smartWritten.With(labels).Set(float64(attr.ValueRaw * 512))
+					exp.smartWritten.With(labels).Set(float64(attr.ValueRaw))
 				case "Power_On_Hours":
 					exp.smartPowerOnHours.With(labels).Set(float64(attr.ValueRaw))
 				case "Power_Cycle_Count":
