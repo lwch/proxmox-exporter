@@ -9,6 +9,7 @@ import (
 
 	"github.com/lwch/logging"
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/shirou/gopsutil/v3/cpu"
 )
 
 type nodeExporter struct {
@@ -21,6 +22,7 @@ type nodeExporter struct {
 	info           *prometheus.GaugeVec
 	cpuUsage       prometheus.Gauge
 	cpuLoadAverage *prometheus.GaugeVec
+	cpuFrequency   *prometheus.GaugeVec
 	memoryUsed     prometheus.Gauge
 	memoryFree     prometheus.Gauge
 	memoryTotal    prometheus.Gauge
@@ -91,6 +93,12 @@ pve_version: proxmox version`,
 		Help:        "node cpu load average",
 		ConstLabels: labels,
 	}, []string{"minute"})
+	exp.cpuFrequency = prometheus.NewGaugeVec(prometheus.GaugeOpts{
+		Namespace:   namespace,
+		Name:        "cpu_frequency",
+		Help:        "node cpu frequency of each core",
+		ConstLabels: labels,
+	}, []string{"processor"})
 
 	// memory
 	exp.memoryUsed = prometheus.NewGauge(prometheus.GaugeOpts{
@@ -229,6 +237,7 @@ func (exp *nodeExporter) Describe(ch chan<- *prometheus.Desc) {
 	// cpu
 	exp.cpuUsage.Describe(ch)
 	exp.cpuLoadAverage.Describe(ch)
+	exp.cpuFrequency.Describe(ch)
 	// memory
 	exp.memoryUsed.Describe(ch)
 	exp.memoryFree.Describe(ch)
@@ -268,6 +277,7 @@ func (exp *nodeExporter) Collect(ch chan<- prometheus.Metric) {
 	// cpu
 	exp.cpuUsage.Collect(ch)
 	exp.cpuLoadAverage.Collect(ch)
+	exp.cpuFrequency.Collect(ch)
 	// memory
 	exp.memoryUsed.Collect(ch)
 	exp.memoryFree.Collect(ch)
@@ -335,6 +345,15 @@ func (exp *nodeExporter) updateCpu(status proxmox.NodeStatus) {
 	exp.cpuLoadAverage.With(prometheus.Labels{"minute": "1"}).Set(loadAvg[0])
 	exp.cpuLoadAverage.With(prometheus.Labels{"minute": "5"}).Set(loadAvg[1])
 	exp.cpuLoadAverage.With(prometheus.Labels{"minute": "15"}).Set(loadAvg[2])
+	stats, err := cpu.Info()
+	if err != nil {
+		logging.Error("get cpu info: %v", err)
+		return
+	}
+	for _, stat := range stats {
+		label := prometheus.Labels{"processor": fmt.Sprintf("%d", stat.CPU)}
+		exp.cpuFrequency.With(label).Set(stat.Mhz)
+	}
 }
 
 func (exp *nodeExporter) updateMemory(status proxmox.NodeStatus) {
