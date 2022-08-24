@@ -1,15 +1,17 @@
 package exporter
 
 import (
+	"bufio"
 	"exporter/proxmox"
 	"exporter/sensors"
 	"fmt"
+	"os"
 	"sort"
 	"strconv"
+	"strings"
 
 	"github.com/lwch/logging"
 	"github.com/prometheus/client_golang/prometheus"
-	"github.com/shirou/gopsutil/v3/cpu"
 )
 
 type nodeExporter struct {
@@ -345,14 +347,40 @@ func (exp *nodeExporter) updateCpu(status proxmox.NodeStatus) {
 	exp.cpuLoadAverage.With(prometheus.Labels{"minute": "1"}).Set(loadAvg[0])
 	exp.cpuLoadAverage.With(prometheus.Labels{"minute": "5"}).Set(loadAvg[1])
 	exp.cpuLoadAverage.With(prometheus.Labels{"minute": "15"}).Set(loadAvg[2])
-	stats, err := cpu.Info()
+
+	f, err := os.Open("/proc/cpuinfo")
 	if err != nil {
 		logging.Error("get cpu info: %v", err)
 		return
 	}
-	for _, stat := range stats {
-		label := prometheus.Labels{"processor": fmt.Sprintf("%d", stat.CPU)}
-		exp.cpuFrequency.With(label).Set(stat.Mhz)
+	defer f.Close()
+	s := bufio.NewScanner(f)
+	var processor string
+	var mhz float64
+	for s.Scan() {
+		fields := strings.Split(s.Text(), ":")
+		if len(fields) < 2 {
+			continue
+		}
+		key := strings.TrimSpace(fields[0])
+		value := strings.TrimSpace(fields[1])
+
+		switch key {
+		case "processor":
+			if len(processor) > 0 {
+				label := prometheus.Labels{"processor": processor}
+				exp.cpuFrequency.With(label).Set(mhz)
+			}
+			processor = value
+		case "cpu MHz", "clock":
+			if t, err := strconv.ParseFloat(strings.Replace(value, "MHz", "", 1), 64); err == nil {
+				mhz = t
+			}
+		}
+	}
+	if len(processor) > 0 {
+		label := prometheus.Labels{"processor": processor}
+		exp.cpuFrequency.With(label).Set(mhz)
 	}
 }
 
