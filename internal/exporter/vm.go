@@ -17,6 +17,17 @@ type vmExporter struct {
 	// cpu
 	cpuUsage *prometheus.GaugeVec
 	cpuTotal *prometheus.GaugeVec
+	// memory
+	memoryUsed  *prometheus.GaugeVec
+	memoryTotal *prometheus.GaugeVec
+	// disk
+	diskUsed  *prometheus.GaugeVec
+	diskTotal *prometheus.GaugeVec
+	diskRead  *prometheus.GaugeVec
+	diskWrite *prometheus.GaugeVec
+	// network
+	netin  *prometheus.GaugeVec
+	netout *prometheus.GaugeVec
 }
 
 func newVmExporter(parent *nodeExporter) *vmExporter {
@@ -61,6 +72,57 @@ disk: max disk bytes`,
 		Help:        "vm max cpu core count",
 		ConstLabels: constLabels,
 	}, labels)
+	// memory
+	exp.memoryUsed = prometheus.NewGaugeVec(prometheus.GaugeOpts{
+		Namespace:   namespace,
+		Name:        "memory_used",
+		Help:        "vm memory used bytes",
+		ConstLabels: constLabels,
+	}, labels)
+	exp.memoryTotal = prometheus.NewGaugeVec(prometheus.GaugeOpts{
+		Namespace:   namespace,
+		Name:        "memory_total",
+		Help:        "vm memory total bytes",
+		ConstLabels: constLabels,
+	}, labels)
+	// disk
+	exp.diskUsed = prometheus.NewGaugeVec(prometheus.GaugeOpts{
+		Namespace:   namespace,
+		Name:        "disk_used",
+		Help:        "vm disk used bytes",
+		ConstLabels: constLabels,
+	}, labels)
+	exp.diskTotal = prometheus.NewGaugeVec(prometheus.GaugeOpts{
+		Namespace:   namespace,
+		Name:        "disk_total",
+		Help:        "vm disk total bytes",
+		ConstLabels: constLabels,
+	}, labels)
+	exp.diskRead = prometheus.NewGaugeVec(prometheus.GaugeOpts{
+		Namespace:   namespace,
+		Name:        "disk_read",
+		Help:        "vm disk readen bytes",
+		ConstLabels: constLabels,
+	}, labels)
+	exp.diskWrite = prometheus.NewGaugeVec(prometheus.GaugeOpts{
+		Namespace:   namespace,
+		Name:        "disk_write",
+		Help:        "vm disk written bytes",
+		ConstLabels: constLabels,
+	}, labels)
+	// network
+	exp.netin = prometheus.NewGaugeVec(prometheus.GaugeOpts{
+		Namespace:   namespace,
+		Name:        "netin",
+		Help:        "vm network received bytes",
+		ConstLabels: constLabels,
+	}, labels)
+	exp.netout = prometheus.NewGaugeVec(prometheus.GaugeOpts{
+		Namespace:   namespace,
+		Name:        "netout",
+		Help:        "vm network sent bytes",
+		ConstLabels: constLabels,
+	}, labels)
 }
 
 func (exp *vmExporter) Describe(ch chan<- *prometheus.Desc) {
@@ -70,6 +132,17 @@ func (exp *vmExporter) Describe(ch chan<- *prometheus.Desc) {
 	// cpu
 	exp.cpuUsage.Describe(ch)
 	exp.cpuTotal.Describe(ch)
+	// memory
+	exp.memoryUsed.Describe(ch)
+	exp.memoryTotal.Describe(ch)
+	// disk
+	exp.diskUsed.Describe(ch)
+	exp.diskTotal.Describe(ch)
+	exp.diskRead.Describe(ch)
+	exp.diskWrite.Describe(ch)
+	// network
+	exp.netin.Describe(ch)
+	exp.netout.Describe(ch)
 }
 
 func (exp *vmExporter) Collect(ch chan<- prometheus.Metric) {
@@ -81,6 +154,17 @@ func (exp *vmExporter) Collect(ch chan<- prometheus.Metric) {
 	// cpu
 	exp.cpuUsage.Collect(ch)
 	exp.cpuTotal.Collect(ch)
+	// memory
+	exp.memoryUsed.Collect(ch)
+	exp.memoryTotal.Collect(ch)
+	// disk
+	exp.diskUsed.Collect(ch)
+	exp.diskTotal.Collect(ch)
+	exp.diskRead.Collect(ch)
+	exp.diskWrite.Collect(ch)
+	// network
+	exp.netin.Collect(ch)
+	exp.netout.Collect(ch)
 }
 
 func (exp *vmExporter) updateStatus() {
@@ -118,5 +202,16 @@ func (exp *vmExporter) updateStatus() {
 		// cpu
 		exp.cpuUsage.With(labels).Set(vm.Cpu)
 		exp.cpuTotal.With(labels).Set(float64(vm.MaxCpu))
+		// memory
+		exp.memoryUsed.With(labels).Set(float64(vm.Memory))
+		exp.memoryTotal.With(labels).Set(float64(vm.MaxMemory))
+		// disk
+		exp.diskUsed.With(labels).Set(float64(vm.Disk))
+		exp.diskTotal.With(labels).Set(float64(vm.MaxDisk))
+		exp.diskRead.With(labels).Set(float64(vm.DiskRead))
+		exp.diskWrite.With(labels).Set(float64(vm.DiskWrite))
+		// network
+		exp.netin.With(labels).Set(float64(vm.NetIn))
+		exp.netout.With(labels).Set(float64(vm.NetOut))
 	}
 }
