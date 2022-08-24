@@ -10,6 +10,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/anatol/smart.go"
+	"github.com/jaypipes/ghw"
 	"github.com/lwch/logging"
 	"github.com/prometheus/client_golang/prometheus"
 )
@@ -20,30 +22,35 @@ type nodeExporter struct {
 	vm     *vmExporter
 
 	// stats
-	uptime         prometheus.Gauge
-	info           *prometheus.GaugeVec
-	cpuUsage       prometheus.Gauge
-	cpuLoadAverage *prometheus.GaugeVec
-	cpuFrequency   *prometheus.GaugeVec
-	memoryUsed     prometheus.Gauge
-	memoryFree     prometheus.Gauge
-	memoryTotal    prometheus.Gauge
-	swapUsed       prometheus.Gauge
-	swapFree       prometheus.Gauge
-	swapTotal      prometheus.Gauge
-	rootfsUsed     prometheus.Gauge
-	rootfsFree     prometheus.Gauge
-	rootfsTotal    prometheus.Gauge
-	ioWait         prometheus.Gauge
-	storageInfo    *prometheus.GaugeVec
-	storageUsed    *prometheus.GaugeVec
-	storageFree    *prometheus.GaugeVec
-	storageTotal   *prometheus.GaugeVec
-	storageUsage   *prometheus.GaugeVec
-	sensors        *prometheus.GaugeVec
-	netin          prometheus.Gauge
-	netout         prometheus.Gauge
-	// TODO: nvme and ssd metrics
+	uptime            prometheus.Gauge
+	info              *prometheus.GaugeVec
+	cpuUsage          prometheus.Gauge
+	cpuLoadAverage    *prometheus.GaugeVec
+	cpuFrequency      *prometheus.GaugeVec
+	memoryUsed        prometheus.Gauge
+	memoryFree        prometheus.Gauge
+	memoryTotal       prometheus.Gauge
+	swapUsed          prometheus.Gauge
+	swapFree          prometheus.Gauge
+	swapTotal         prometheus.Gauge
+	rootfsUsed        prometheus.Gauge
+	rootfsFree        prometheus.Gauge
+	rootfsTotal       prometheus.Gauge
+	ioWait            prometheus.Gauge
+	storageInfo       *prometheus.GaugeVec
+	storageUsed       *prometheus.GaugeVec
+	storageFree       *prometheus.GaugeVec
+	storageTotal      *prometheus.GaugeVec
+	storageUsage      *prometheus.GaugeVec
+	sensors           *prometheus.GaugeVec
+	netin             prometheus.Gauge
+	netout            prometheus.Gauge
+	smartTemperature  *prometheus.GaugeVec
+	smartUsedPercent  *prometheus.GaugeVec
+	smartReaden       *prometheus.GaugeVec
+	smartWritten      *prometheus.GaugeVec
+	smartPowerCycles  *prometheus.GaugeVec
+	smartPowerOnHours *prometheus.GaugeVec
 }
 
 func newNodeExporter(parent *Exporter, name string) *nodeExporter {
@@ -230,6 +237,44 @@ type: storage type`,
 		Help:        "node sent bytes",
 		ConstLabels: labels,
 	})
+	// smart
+	smartLabels := []string{"device", "type"}
+	exp.smartTemperature = prometheus.NewGaugeVec(prometheus.GaugeOpts{
+		Namespace:   namespace,
+		Name:        "smart_temperature",
+		Help:        "temperature of smart data",
+		ConstLabels: labels,
+	}, smartLabels)
+	exp.smartWritten = prometheus.NewGaugeVec(prometheus.GaugeOpts{
+		Namespace:   namespace,
+		Name:        "smart_written",
+		Help:        "written bytes of smart data",
+		ConstLabels: labels,
+	}, smartLabels)
+	exp.smartReaden = prometheus.NewGaugeVec(prometheus.GaugeOpts{
+		Namespace:   namespace,
+		Name:        "smart_readden",
+		Help:        "readden bytes of smart data",
+		ConstLabels: labels,
+	}, smartLabels)
+	exp.smartUsedPercent = prometheus.NewGaugeVec(prometheus.GaugeOpts{
+		Namespace:   namespace,
+		Name:        "smart_used_percent",
+		Help:        "used percent of smart data(nvme)",
+		ConstLabels: labels,
+	}, smartLabels)
+	exp.smartPowerOnHours = prometheus.NewGaugeVec(prometheus.GaugeOpts{
+		Namespace:   namespace,
+		Name:        "smart_poweron_hours",
+		Help:        "poweron hours of smart data",
+		ConstLabels: labels,
+	}, smartLabels)
+	exp.smartPowerCycles = prometheus.NewGaugeVec(prometheus.GaugeOpts{
+		Namespace:   namespace,
+		Name:        "smart_power_cycles",
+		Help:        "power cycles of smart data",
+		ConstLabels: labels,
+	}, smartLabels)
 }
 
 func (exp *nodeExporter) Describe(ch chan<- *prometheus.Desc) {
@@ -403,6 +448,7 @@ func (exp *nodeExporter) updateDisk(status proxmox.NodeStatus) {
 	// disk
 	exp.ioWait.Set(status.Wait * 100.)
 	exp.updateStorage()
+	exp.updateSmart()
 }
 
 func (exp *nodeExporter) updateStorage() {
@@ -477,5 +523,69 @@ func (exp *nodeExporter) updateNetwork() {
 	if len(datas) > 0 {
 		exp.netin.Set(datas[0].NetIn)
 		exp.netout.Set(datas[0].NetOut)
+	}
+}
+
+func (exp *nodeExporter) updateSmart() {
+	block, err := ghw.Block()
+	if err != nil {
+		logging.Error("get disks: %v", err)
+		return
+	}
+	for _, disk := range block.Disks {
+		if disk.StorageController == ghw.STORAGE_CONTROLLER_UNKNOWN {
+			continue
+		}
+
+		dev, err := smart.Open("/dev/" + disk.Name)
+		if err != nil {
+			logging.Error("open smart [%s]: %v", disk.Name, err)
+			continue
+		}
+		defer dev.Close()
+
+		labels := prometheus.Labels{"device": disk.Name}
+
+		switch sm := dev.(type) {
+		case *smart.NVMeDevice:
+			log, err := sm.ReadSMART()
+			if err != nil {
+				logging.Error("read smart [%s]: %v", disk.Name, err)
+				continue
+			}
+			labels["type"] = "nvme"
+			exp.smartTemperature.With(labels).Set(float64(log.Temperature) - 273.1)
+			exp.smartUsedPercent.With(labels).Set(float64(log.PercentUsed))
+			exp.smartReaden.With(labels).Set(float64(log.DataUnitsRead.Val[0]))
+			exp.smartWritten.With(labels).Set(float64(log.DataUnitsWritten.Val[0]))
+			exp.smartPowerOnHours.With(labels).Set(float64(log.PowerOnHours.Val[0]))
+			exp.smartPowerCycles.With(labels).Set(float64(log.PowerCycles.Val[0]))
+		case *smart.SataDevice:
+			page, err := sm.ReadSMARTData()
+			if err != nil {
+				logging.Error("read smart [%s]: %v", disk.Name, err)
+				continue
+			}
+			labels["type"] = "sata"
+			for _, attr := range page.Attrs {
+				switch attr.Name {
+				case "Airflow_Temperature_Cel":
+					current, _, _, _, err := attr.ParseAsTemperature()
+					if err != nil {
+						logging.Error("get temperature [%s]: %v", disk.Name, err)
+						continue
+					}
+					exp.smartTemperature.With(labels).Set(float64(current))
+				case "Total_LBAs_Read":
+					exp.smartReaden.With(labels).Set(float64(attr.ValueRaw * 512))
+				case "Total_LBAs_Written":
+					exp.smartWritten.With(labels).Set(float64(attr.ValueRaw * 512))
+				case "Power_On_Hours":
+					exp.smartPowerOnHours.With(labels).Set(float64(attr.ValueRaw))
+				case "Power_Cycle_Count":
+					exp.smartPowerCycles.With(labels).Set(float64(attr.ValueRaw))
+				}
+			}
+		}
 	}
 }
