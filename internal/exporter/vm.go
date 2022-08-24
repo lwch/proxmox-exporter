@@ -39,7 +39,7 @@ func newVmExporter(parent *nodeExporter) *vmExporter {
 func (exp *vmExporter) build() {
 	const namespace = "vm"
 	constLabels := prometheus.Labels{"node_name": exp.parent.name}
-	labels := []string{"vm_id", "vm_name", "vm_status"}
+	labels := []string{"vm_id", "vm_name", "vm_type", "vm_status"}
 
 	// info
 	exp.uptime = prometheus.NewGaugeVec(prometheus.GaugeOpts{
@@ -52,13 +52,12 @@ func (exp *vmExporter) build() {
 		Namespace: namespace,
 		Name:      "info",
 		Help: `vm info, labels:
-type: lxc or qemu
 uptime: uptime
 core: cpu cores
 memory: max memory bytes
 disk: max disk bytes`,
 		ConstLabels: constLabels,
-	}, append(labels, "type", "uptime", "core", "memory", "disk"))
+	}, append(labels, "uptime", "core", "memory", "disk"))
 	// cpu
 	exp.cpuUsage = prometheus.NewGaugeVec(prometheus.GaugeOpts{
 		Namespace:   namespace,
@@ -188,6 +187,7 @@ func (exp *vmExporter) updateStatus() {
 		labels := prometheus.Labels{
 			"vm_id":     vm.ID,
 			"vm_name":   vm.Name,
+			"vm_type":   string(vm.Type),
 			"vm_status": string(vm.Status),
 		}
 		// info
