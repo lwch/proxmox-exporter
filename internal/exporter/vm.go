@@ -199,7 +199,7 @@ func (exp *vmExporter) updateStatus() {
 			"disk":   fmt.Sprintf("%d", vm.MaxDisk),
 		})).Inc()
 		// cpu
-		exp.cpuUsage.With(labels).Set(vm.Cpu)
+		exp.cpuUsage.With(labels).Set(vm.Cpu * 100.)
 		exp.cpuTotal.With(labels).Set(float64(vm.MaxCpu))
 		// memory
 		exp.memoryUsed.With(labels).Set(float64(vm.Memory))
