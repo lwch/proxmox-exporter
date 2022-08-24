@@ -309,6 +309,13 @@ func (exp *nodeExporter) Describe(ch chan<- *prometheus.Desc) {
 	// network
 	exp.netin.Describe(ch)
 	exp.netout.Describe(ch)
+	// smart
+	exp.smartTemperature.Describe(ch)
+	exp.smartUsedPercent.Describe(ch)
+	exp.smartReaden.Describe(ch)
+	exp.smartWritten.Describe(ch)
+	exp.smartPowerOnHours.Describe(ch)
+	exp.smartPowerCycles.Describe(ch)
 
 	// vm describe
 	exp.vm.Describe(ch)
@@ -349,6 +356,13 @@ func (exp *nodeExporter) Collect(ch chan<- prometheus.Metric) {
 	// network
 	exp.netin.Collect(ch)
 	exp.netout.Collect(ch)
+	// smart
+	exp.smartTemperature.Collect(ch)
+	exp.smartUsedPercent.Collect(ch)
+	exp.smartReaden.Collect(ch)
+	exp.smartWritten.Collect(ch)
+	exp.smartPowerOnHours.Collect(ch)
+	exp.smartPowerCycles.Collect(ch)
 
 	// vm collect
 	exp.vm.Collect(ch)
