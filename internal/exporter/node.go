@@ -384,6 +384,7 @@ func (exp *nodeExporter) updateStatus() {
 
 func (exp *nodeExporter) updateInfo(status proxmox.NodeStatus) {
 	exp.uptime.Set(float64(status.Uptime))
+	exp.info.Reset()
 	exp.info.With(prometheus.Labels{
 		"model":          status.CpuInfo.Model,
 		"sockets":        fmt.Sprintf("%d", status.CpuInfo.Sockets),
