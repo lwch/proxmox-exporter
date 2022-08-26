@@ -124,6 +124,26 @@ disk: max disk bytes`,
 	}, labels)
 }
 
+func (exp *vmExporter) resetAll() {
+	// stats
+	exp.uptime.Reset()
+	exp.info.Reset()
+	// cpu
+	exp.cpuUsage.Reset()
+	exp.cpuTotal.Reset()
+	// memory
+	exp.memoryUsed.Reset()
+	exp.memoryTotal.Reset()
+	// disk
+	exp.diskUsed.Reset()
+	exp.diskTotal.Reset()
+	exp.diskRead.Reset()
+	exp.diskWrite.Reset()
+	// network
+	exp.netin.Reset()
+	exp.netout.Reset()
+}
+
 func (exp *vmExporter) Describe(ch chan<- *prometheus.Desc) {
 	// info
 	exp.uptime.Describe(ch)
@@ -182,7 +202,7 @@ func (exp *vmExporter) updateStatus() {
 		}
 		return ret
 	}
-	exp.info.Reset()
+	exp.resetAll()
 	for _, vm := range vms {
 		labels := prometheus.Labels{
 			"vm_id":     vm.ID,
