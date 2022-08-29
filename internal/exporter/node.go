@@ -571,8 +571,9 @@ func (exp *nodeExporter) updateSmart() {
 		return
 	}
 	for _, disk := range block.Disks {
-		if disk.DriveType != ghw.DRIVE_TYPE_HDD &&
-			disk.DriveType != ghw.DRIVE_TYPE_SSD {
+		if (disk.DriveType != ghw.DRIVE_TYPE_HDD &&
+			disk.DriveType != ghw.DRIVE_TYPE_SSD) ||
+			disk.DriveType == ghw.DRIVE_TYPE_UNKNOWN {
 			continue
 		}
 
