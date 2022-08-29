@@ -8,13 +8,41 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/kardianos/service"
+	"github.com/lwch/runtime"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
+type app struct {
+	cfg *conf.Configure
+}
+
+func (app *app) Start(s service.Service) error {
+	go func() {
+		// cfg.Cli.SetDebug(true)
+		// fmt.Println(cfg.Cli.ClusterResources(proxmox.ResourceVM))
+
+		exp := exporter.New(app.cfg.Cli)
+
+		reg := prometheus.NewRegistry()
+		reg.MustRegister(exp)
+		http.Handle("/metrics", promhttp.HandlerFor(
+			reg, promhttp.HandlerOpts{Registry: reg},
+		))
+		http.ListenAndServe(fmt.Sprintf(":%d", app.cfg.Listen), nil)
+	}()
+	return nil
+}
+
+func (app *app) Stop(s service.Service) error {
+	return nil
+}
+
 func main() {
 	cf := flag.String("conf", "", "configure file dir")
 	debug := flag.Bool("debug", false, "run in debug modes")
+	act := flag.String("action", "", "install or uninstall")
 	flag.Parse()
 
 	if len(*cf) == 0 {
@@ -24,15 +52,24 @@ func main() {
 
 	cfg := conf.Load(*cf, *debug)
 
-	// cfg.Cli.SetDebug(true)
-	// fmt.Println(cfg.Cli.ClusterResources(proxmox.ResourceVM))
+	app := app{cfg: cfg}
 
-	exp := exporter.New(cfg.Cli)
+	svc, err := service.New(&app, &service.Config{
+		Name:         "proxmox-exporter",
+		DisplayName:  "proxmox-exporter",
+		Description:  "proxmox prometheus exporter",
+		UserName:     "root",
+		Arguments:    []string{"-conf", *cf},
+		Dependencies: []string{"After=network.target"},
+	})
+	runtime.Assert(err)
 
-	reg := prometheus.NewRegistry()
-	reg.MustRegister(exp)
-	http.Handle("/metrics", promhttp.HandlerFor(
-		reg, promhttp.HandlerOpts{Registry: reg},
-	))
-	http.ListenAndServe(fmt.Sprintf(":%d", cfg.Listen), nil)
+	switch *act {
+	case "install":
+		runtime.Assert(svc.Install())
+	case "uninstall":
+		runtime.Assert(svc.Uninstall())
+	default:
+		runtime.Assert(svc.Run())
+	}
 }

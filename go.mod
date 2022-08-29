@@ -5,6 +5,7 @@ go 1.18
 require (
 	github.com/anatol/smart.go v0.0.0-20220822162331-dfd542946993
 	github.com/jaypipes/ghw v0.9.0
+	github.com/kardianos/service v1.2.1
 	github.com/lwch/logging v0.0.0-20220322084100-ec48185d95ab
 	github.com/lwch/runtime v1.0.0
 	github.com/prometheus/client_golang v1.13.0
