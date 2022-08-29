@@ -1,11 +1,17 @@
 # proxmox-exporter
 
-proxmox exporter of prometheus, you must install the exporter in each proxmox node.
+[README](README.md) | [中文文档](README_CN.md)
 
-* supported node info
-* supported vm info
-* supported sensors info
-* supported disk info
+proxmox-exporter of [prometheus](https://prometheus.io/), you must install the exporter in each proxmox node.
+
+supported:
+
+* node info
+* node metrics
+* node sensors info(sensors command)
+* node disk info(smartctl infos)
+* vm info
+* vm metrics
 
 view [metrics](docs/metrics.txt)
 
@@ -31,6 +37,6 @@ view [metrics](docs/metrics.txt)
 
 ![grafana](docs/grafana.png)
 
-## supported
+## tested
 
 only tested proxmox version 7.2
