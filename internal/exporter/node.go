@@ -321,8 +321,32 @@ func (exp *nodeExporter) Describe(ch chan<- *prometheus.Desc) {
 	exp.vm.Describe(ch)
 }
 
+func (exp *nodeExporter) reset() {
+	// online
+	exp.info.Reset()
+	// cpu
+	exp.cpuLoadAverage.Reset()
+	exp.cpuFrequency.Reset()
+	// disk
+	exp.storageInfo.Reset()
+	exp.storageUsed.Reset()
+	exp.storageFree.Reset()
+	exp.storageTotal.Reset()
+	exp.storageUsage.Reset()
+	// sensors
+	exp.sensors.Reset()
+	// smart
+	exp.smartTemperature.Reset()
+	exp.smartUsedPercent.Reset()
+	exp.smartReaden.Reset()
+	exp.smartWritten.Reset()
+	exp.smartPowerOnHours.Reset()
+	exp.smartPowerCycles.Reset()
+}
+
 func (exp *nodeExporter) Collect(ch chan<- prometheus.Metric) {
 	// collect values
+	exp.reset()
 	exp.updateStatus()
 
 	// online
@@ -384,7 +408,6 @@ func (exp *nodeExporter) updateStatus() {
 
 func (exp *nodeExporter) updateInfo(status proxmox.NodeStatus) {
 	exp.uptime.Set(float64(status.Uptime))
-	exp.info.Reset()
 	exp.info.With(prometheus.Labels{
 		"model":          status.CpuInfo.Model,
 		"sockets":        fmt.Sprintf("%d", status.CpuInfo.Sockets),
