@@ -40,7 +40,7 @@ view [metrics](docs/metrics.txt)
        sudo systemctl start proxmox-exporter
 
 7. add node in prometheus
-8. import dashboard in grafana
+8. import dashboard in grafana, dashboard id 16805
 
 ## grafana dashboard
 

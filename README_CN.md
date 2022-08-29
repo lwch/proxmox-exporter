@@ -40,7 +40,7 @@ proxmox-exporter是一个基于[prometheus](https://prometheus.io/)的导出程�
        sudo systemctl start proxmox-exporter
 
 7. 添加prometheus采集节点
-8. 导入grafana监控面板
+8. 导入grafana监控面板，面板ID: 16805
 
 ## grafana监控面板
 
