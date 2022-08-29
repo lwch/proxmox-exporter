@@ -15,7 +15,16 @@ supported:
 
 view [metrics](docs/metrics.txt)
 
-## how to install
+## prepare to install
+
+1. install [sensors](https://packages.debian.org/bullseye/lm-sensors) command
+
+       sudo apt install lm-sensors
+2. detect sensors
+
+       sudo sensors-detect
+
+## install
 
 1. download exporter file from [latest](https://github.com/lwch/proxmox-exporter/releases/latest) version, and add execute permission
 

@@ -15,7 +15,16 @@ proxmox-exporter是一个基于[prometheus](https://prometheus.io/)的导出程�
 
 查看[metrics](docs/metrics.txt)指标
 
-## 如何安装
+## 准备安装
+
+1. 使用以下命令安装[sensors](https://packages.debian.org/bullseye/lm-sensors)
+
+       sudo apt install lm-sensors
+2. 检测设备
+
+       sudo sensors-detect
+
+## 安装
 
 1. 下载[最新](https://github.com/lwch/proxmox-exporter/releases/latest)版本的exporter，并添加执行权限
 
@@ -39,4 +48,4 @@ proxmox-exporter是一个基于[prometheus](https://prometheus.io/)的导出程�
 
 ## 已支持版本
 
-目前已测试7.2版本
+目前已测试7.2版本，旧版本请自行测试
