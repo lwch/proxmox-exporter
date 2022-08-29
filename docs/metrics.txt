@@ -1,0 +1,299 @@
+# HELP node_cpu_frequency node cpu frequency of each core
+# TYPE node_cpu_frequency gauge
+node_cpu_frequency{node_name="pve",processor="0"} 2917.238
+node_cpu_frequency{node_name="pve",processor="1"} 1600
+node_cpu_frequency{node_name="pve",processor="10"} 1600
+node_cpu_frequency{node_name="pve",processor="11"} 1600
+node_cpu_frequency{node_name="pve",processor="2"} 1600
+node_cpu_frequency{node_name="pve",processor="3"} 1600
+node_cpu_frequency{node_name="pve",processor="4"} 1600
+node_cpu_frequency{node_name="pve",processor="5"} 1600
+node_cpu_frequency{node_name="pve",processor="6"} 1600
+node_cpu_frequency{node_name="pve",processor="7"} 1600
+node_cpu_frequency{node_name="pve",processor="8"} 1600
+node_cpu_frequency{node_name="pve",processor="9"} 3447.117
+# HELP node_cpu_loadavg node cpu load average
+# TYPE node_cpu_loadavg gauge
+node_cpu_loadavg{minute="1",node_name="pve"} 0.8
+node_cpu_loadavg{minute="15",node_name="pve"} 0.43
+node_cpu_loadavg{minute="5",node_name="pve"} 0.52
+# HELP node_cpu_usage node cpu usage ratio(precent)
+# TYPE node_cpu_usage gauge
+node_cpu_usage{node_name="pve"} 1.58968802008345
+# HELP node_info node info, labels:\nmodel: cpu model\nsockets: cpu sockets count\ncores: cpu cores\nthreads: cpu threads\nmhz: cpu frequency\nkernel_version: linux kernel version\npve_version: proxmox version
+# TYPE node_info gauge
+node_info{cores="6",kernel_version="Linux 5.15.39-3-pve #2 SMP PVE 5.15.39-3 (Wed, 27 Jul 2022 13:45:39 +0200)",mhz="1600.000",model="Intel(R) Core(TM) i7-10710U CPU @ 1.10GHz",node_name="pve",pve_version="pve-manager/7.2-7/d0dd0e85",sockets="1",threads="12"} 1
+# HELP node_iowait node iowait ratio(precent)
+# TYPE node_iowait gauge
+node_iowait{node_name="pve"} 0.0359403972223361
+# HELP node_memory_free free memory bytes of this node
+# TYPE node_memory_free gauge
+node_memory_free{node_name="pve"} 2.0017700864e+10
+# HELP node_memory_total total memory bytes of this node
+# TYPE node_memory_total gauge
+node_memory_total{node_name="pve"} 3.3363566592e+10
+# HELP node_memory_used used memory bytes of this node
+# TYPE node_memory_used gauge
+node_memory_used{node_name="pve"} 1.3345865728e+10
+# HELP node_netin node received bytes
+# TYPE node_netin gauge
+node_netin{node_name="pve"} 5116.45333333333
+# HELP node_netout node sent bytes
+# TYPE node_netout gauge
+node_netout{node_name="pve"} 7912.53333333333
+# HELP node_rootfs_free free rootfs bytes of this node
+# TYPE node_rootfs_free gauge
+node_rootfs_free{node_name="pve"} 1.80914286592e+11
+# HELP node_rootfs_total total rootfs bytes of this node
+# TYPE node_rootfs_total gauge
+node_rootfs_total{node_name="pve"} 2.14698033152e+11
+# HELP node_rootfs_used used rootfs bytes of this node
+# TYPE node_rootfs_used gauge
+node_rootfs_used{node_name="pve"} 3.378374656e+10
+# HELP node_sensors use sensors command to get device temperature and cpu fan speed
+# TYPE node_sensors gauge
+node_sensors{chip_name="acpitz-acpi-0",feature_name="temp1_input",label_name="temp1",node_name="pve"} -263.2
+node_sensors{chip_name="acpitz-acpi-0",feature_name="temp2_crit",label_name="temp2",node_name="pve"} 119
+node_sensors{chip_name="acpitz-acpi-0",feature_name="temp2_input",label_name="temp2",node_name="pve"} 69
+node_sensors{chip_name="coretemp-isa-0000",feature_name="temp1_crit",label_name="Package id 0",node_name="pve"} 100
+node_sensors{chip_name="coretemp-isa-0000",feature_name="temp1_crit_alarm",label_name="Package id 0",node_name="pve"} 0
+node_sensors{chip_name="coretemp-isa-0000",feature_name="temp1_input",label_name="Package id 0",node_name="pve"} 70
+node_sensors{chip_name="coretemp-isa-0000",feature_name="temp1_max",label_name="Package id 0",node_name="pve"} 100
+node_sensors{chip_name="coretemp-isa-0000",feature_name="temp2_crit",label_name="Core 0",node_name="pve"} 100
+node_sensors{chip_name="coretemp-isa-0000",feature_name="temp2_crit_alarm",label_name="Core 0",node_name="pve"} 0
+node_sensors{chip_name="coretemp-isa-0000",feature_name="temp2_input",label_name="Core 0",node_name="pve"} 68
+node_sensors{chip_name="coretemp-isa-0000",feature_name="temp2_max",label_name="Core 0",node_name="pve"} 100
+node_sensors{chip_name="coretemp-isa-0000",feature_name="temp3_crit",label_name="Core 1",node_name="pve"} 100
+node_sensors{chip_name="coretemp-isa-0000",feature_name="temp3_crit_alarm",label_name="Core 1",node_name="pve"} 0
+node_sensors{chip_name="coretemp-isa-0000",feature_name="temp3_input",label_name="Core 1",node_name="pve"} 70
+node_sensors{chip_name="coretemp-isa-0000",feature_name="temp3_max",label_name="Core 1",node_name="pve"} 100
+node_sensors{chip_name="coretemp-isa-0000",feature_name="temp4_crit",label_name="Core 2",node_name="pve"} 100
+node_sensors{chip_name="coretemp-isa-0000",feature_name="temp4_crit_alarm",label_name="Core 2",node_name="pve"} 0
+node_sensors{chip_name="coretemp-isa-0000",feature_name="temp4_input",label_name="Core 2",node_name="pve"} 68
+node_sensors{chip_name="coretemp-isa-0000",feature_name="temp4_max",label_name="Core 2",node_name="pve"} 100
+node_sensors{chip_name="coretemp-isa-0000",feature_name="temp5_crit",label_name="Core 3",node_name="pve"} 100
+node_sensors{chip_name="coretemp-isa-0000",feature_name="temp5_crit_alarm",label_name="Core 3",node_name="pve"} 0
+node_sensors{chip_name="coretemp-isa-0000",feature_name="temp5_input",label_name="Core 3",node_name="pve"} 68
+node_sensors{chip_name="coretemp-isa-0000",feature_name="temp5_max",label_name="Core 3",node_name="pve"} 100
+node_sensors{chip_name="coretemp-isa-0000",feature_name="temp6_crit",label_name="Core 4",node_name="pve"} 100
+node_sensors{chip_name="coretemp-isa-0000",feature_name="temp6_crit_alarm",label_name="Core 4",node_name="pve"} 0
+node_sensors{chip_name="coretemp-isa-0000",feature_name="temp6_input",label_name="Core 4",node_name="pve"} 66
+node_sensors{chip_name="coretemp-isa-0000",feature_name="temp6_max",label_name="Core 4",node_name="pve"} 100
+node_sensors{chip_name="coretemp-isa-0000",feature_name="temp7_crit",label_name="Core 5",node_name="pve"} 100
+node_sensors{chip_name="coretemp-isa-0000",feature_name="temp7_crit_alarm",label_name="Core 5",node_name="pve"} 0
+node_sensors{chip_name="coretemp-isa-0000",feature_name="temp7_input",label_name="Core 5",node_name="pve"} 66
+node_sensors{chip_name="coretemp-isa-0000",feature_name="temp7_max",label_name="Core 5",node_name="pve"} 100
+node_sensors{chip_name="nvme-pci-3a00",feature_name="temp1_alarm",label_name="Composite",node_name="pve"} 0
+node_sensors{chip_name="nvme-pci-3a00",feature_name="temp1_crit",label_name="Composite",node_name="pve"} 84.85
+node_sensors{chip_name="nvme-pci-3a00",feature_name="temp1_input",label_name="Composite",node_name="pve"} 53.85
+node_sensors{chip_name="nvme-pci-3a00",feature_name="temp1_max",label_name="Composite",node_name="pve"} 82.85
+node_sensors{chip_name="nvme-pci-3a00",feature_name="temp1_min",label_name="Composite",node_name="pve"} -273.15
+node_sensors{chip_name="pch_cannonlake-virtual-0",feature_name="temp1_input",label_name="temp1",node_name="pve"} 66
+# HELP node_storage_free node storage free bytes
+# TYPE node_storage_free gauge
+node_storage_free{node_name="pve",storage_name="backup"} 4.97457668096e+11
+node_storage_free{node_name="pve",storage_name="local"} 1.80914286592e+11
+node_storage_free{node_name="pve",storage_name="local-lvm"} 1.64797895148e+11
+# HELP node_storage_info node storage info, labels:\ncontent_*: allowed content type\nstorage: storage name\ntype: storage type
+# TYPE node_storage_info gauge
+node_storage_info{content_backup="false",content_images="false",content_iso="true",content_rootdir="false",content_snippets="false",content_vztmpl="true",node_name="pve",storage="local",type="dir"} 1
+node_storage_info{content_backup="false",content_images="true",content_iso="false",content_rootdir="true",content_snippets="false",content_vztmpl="false",node_name="pve",storage="local-lvm",type="lvmthin"} 1node_storage_info{content_backup="true",content_images="false",content_iso="false",content_rootdir="false",content_snippets="false",content_vztmpl="false",node_name="pve",storage="backup",type="dir"} 1
+# HELP node_storage_total node storage total bytes
+# TYPE node_storage_total gauge
+node_storage_total{node_name="pve",storage_name="backup"} 5.36608768e+11
+node_storage_total{node_name="pve",storage_name="local"} 2.14698033152e+11
+node_storage_total{node_name="pve",storage_name="local-lvm"} 6.442450944e+11
+# HELP node_storage_usage node storage usage ratio(precent)
+# TYPE node_storage_usage gauge
+node_storage_usage{node_name="pve",storage_name="backup"} 7.29602314362482
+node_storage_usage{node_name="pve",storage_name="local"} 15.7354709142035
+node_storage_usage{node_name="pve",storage_name="local-lvm"} 74.4199999999255
+# HELP node_storage_used node storage used bytes
+# TYPE node_storage_used gauge
+node_storage_used{node_name="pve",storage_name="backup"} 3.9151099904e+10
+node_storage_used{node_name="pve",storage_name="local"} 3.378374656e+10
+node_storage_used{node_name="pve",storage_name="local-lvm"} 4.79447199252e+11
+# HELP node_swap_free free swap bytes of this node
+# TYPE node_swap_free gauge
+node_swap_free{node_name="pve"} 8.549036032e+09
+# HELP node_swap_total total swap bytes of this node
+# TYPE node_swap_total gauge
+node_swap_total{node_name="pve"} 8.589930496e+09
+# HELP node_swap_used used swap bytes of this node
+# TYPE node_swap_used gauge
+node_swap_used{node_name="pve"} 4.0894464e+07
+# HELP node_uptime node uptime
+# TYPE node_uptime gauge
+node_uptime{node_name="pve"} 568696
+# HELP promhttp_metric_handler_errors_total Total number of internal errors encountered by the promhttp metric handler.
+# TYPE promhttp_metric_handler_errors_total counter
+promhttp_metric_handler_errors_total{cause="encoding"} 0
+promhttp_metric_handler_errors_total{cause="gathering"} 0
+# HELP vm_cpu_total vm max cpu core count
+# TYPE vm_cpu_total gauge
+vm_cpu_total{node_name="pve",vm_id="lxc/100",vm_name="gw",vm_status="running",vm_type="lxc"} 2
+vm_cpu_total{node_name="pve",vm_id="lxc/103",vm_name="cloud",vm_status="running",vm_type="lxc"} 2
+vm_cpu_total{node_name="pve",vm_id="lxc/104",vm_name="test",vm_status="stopped",vm_type="lxc"} 8
+vm_cpu_total{node_name="pve",vm_id="lxc/106",vm_name="stock",vm_status="running",vm_type="lxc"} 4
+vm_cpu_total{node_name="pve",vm_id="lxc/107",vm_name="bunker",vm_status="running",vm_type="lxc"} 2
+vm_cpu_total{node_name="pve",vm_id="lxc/108",vm_name="backup",vm_status="stopped",vm_type="lxc"} 1
+vm_cpu_total{node_name="pve",vm_id="lxc/110",vm_name="monitor",vm_status="running",vm_type="lxc"} 2
+vm_cpu_total{node_name="pve",vm_id="lxc/111",vm_name="code-server",vm_status="stopped",vm_type="lxc"} 2
+vm_cpu_total{node_name="pve",vm_id="qemu/101",vm_name="win11",vm_status="running",vm_type="qemu"} 4
+vm_cpu_total{node_name="pve",vm_id="qemu/102",vm_name="dsm",vm_status="running",vm_type="qemu"} 4
+vm_cpu_total{node_name="pve",vm_id="qemu/105",vm_name="macos",vm_status="stopped",vm_type="qemu"} 4
+vm_cpu_total{node_name="pve",vm_id="qemu/109",vm_name="pve2",vm_status="stopped",vm_type="qemu"} 2
+# HELP vm_cpu_usage vm cpu usage ratio(precent)
+# TYPE vm_cpu_usage gauge
+vm_cpu_usage{node_name="pve",vm_id="lxc/100",vm_name="gw",vm_status="running",vm_type="lxc"} 0.154245659532065
+vm_cpu_usage{node_name="pve",vm_id="lxc/103",vm_name="cloud",vm_status="running",vm_type="lxc"} 0.0298539986191095
+vm_cpu_usage{node_name="pve",vm_id="lxc/104",vm_name="test",vm_status="stopped",vm_type="lxc"} 0
+vm_cpu_usage{node_name="pve",vm_id="lxc/106",vm_name="stock",vm_status="running",vm_type="lxc"} 0.00746349965477736
+vm_cpu_usage{node_name="pve",vm_id="lxc/107",vm_name="bunker",vm_status="running",vm_type="lxc"} 0.00995133287303648
+vm_cpu_usage{node_name="pve",vm_id="lxc/108",vm_name="backup",vm_status="stopped",vm_type="lxc"} 0
+vm_cpu_usage{node_name="pve",vm_id="lxc/110",vm_name="monitor",vm_status="running",vm_type="lxc"} 0.0248783321825912
+vm_cpu_usage{node_name="pve",vm_id="lxc/111",vm_name="code-server",vm_status="stopped",vm_type="lxc"} 0
+vm_cpu_usage{node_name="pve",vm_id="qemu/101",vm_name="win11",vm_status="running",vm_type="qemu"} 5.20812392570023
+vm_cpu_usage{node_name="pve",vm_id="qemu/102",vm_name="dsm",vm_status="running",vm_type="qemu"} 0.973481107607519
+vm_cpu_usage{node_name="pve",vm_id="qemu/105",vm_name="macos",vm_status="stopped",vm_type="qemu"} 0
+vm_cpu_usage{node_name="pve",vm_id="qemu/109",vm_name="pve2",vm_status="stopped",vm_type="qemu"} 0
+# HELP vm_disk_read vm disk readen bytes
+# TYPE vm_disk_read gauge
+vm_disk_read{node_name="pve",vm_id="lxc/100",vm_name="gw",vm_status="running",vm_type="lxc"} 1.499693056e+09
+vm_disk_read{node_name="pve",vm_id="lxc/103",vm_name="cloud",vm_status="running",vm_type="lxc"} 2.405203968e+09
+vm_disk_read{node_name="pve",vm_id="lxc/104",vm_name="test",vm_status="stopped",vm_type="lxc"} 0
+vm_disk_read{node_name="pve",vm_id="lxc/106",vm_name="stock",vm_status="running",vm_type="lxc"} 4.13384704e+09
+vm_disk_read{node_name="pve",vm_id="lxc/107",vm_name="bunker",vm_status="running",vm_type="lxc"} 1.078566912e+09
+vm_disk_read{node_name="pve",vm_id="lxc/108",vm_name="backup",vm_status="stopped",vm_type="lxc"} 0
+vm_disk_read{node_name="pve",vm_id="lxc/110",vm_name="monitor",vm_status="running",vm_type="lxc"} 1.692270592e+09
+vm_disk_read{node_name="pve",vm_id="lxc/111",vm_name="code-server",vm_status="stopped",vm_type="lxc"} 0
+vm_disk_read{node_name="pve",vm_id="qemu/101",vm_name="win11",vm_status="running",vm_type="qemu"} 5.461604864e+09
+vm_disk_read{node_name="pve",vm_id="qemu/102",vm_name="dsm",vm_status="running",vm_type="qemu"} 3.529181184e+09
+vm_disk_read{node_name="pve",vm_id="qemu/105",vm_name="macos",vm_status="stopped",vm_type="qemu"} 0
+vm_disk_read{node_name="pve",vm_id="qemu/109",vm_name="pve2",vm_status="stopped",vm_type="qemu"} 0
+# HELP vm_disk_total vm disk total bytes
+# TYPE vm_disk_total gauge
+vm_disk_total{node_name="pve",vm_id="lxc/100",vm_name="gw",vm_status="running",vm_type="lxc"} 2.0957446144e+10
+vm_disk_total{node_name="pve",vm_id="lxc/103",vm_name="cloud",vm_status="running",vm_type="lxc"} 5.2521566208e+10
+vm_disk_total{node_name="pve",vm_id="lxc/104",vm_name="test",vm_status="stopped",vm_type="lxc"} 2.147483648e+10
+vm_disk_total{node_name="pve",vm_id="lxc/106",vm_name="stock",vm_status="running",vm_type="lxc"} 2.0957446144e+10
+vm_disk_total{node_name="pve",vm_id="lxc/107",vm_name="bunker",vm_status="running",vm_type="lxc"} 2.0957446144e+10
+vm_disk_total{node_name="pve",vm_id="lxc/108",vm_name="backup",vm_status="stopped",vm_type="lxc"} 5.36870912e+10
+vm_disk_total{node_name="pve",vm_id="lxc/110",vm_name="monitor",vm_status="running",vm_type="lxc"} 2.0957446144e+10
+vm_disk_total{node_name="pve",vm_id="lxc/111",vm_name="code-server",vm_status="stopped",vm_type="lxc"} 2.147483648e+10
+vm_disk_total{node_name="pve",vm_id="qemu/101",vm_name="win11",vm_status="running",vm_type="qemu"} 1.073741824e+11
+vm_disk_total{node_name="pve",vm_id="qemu/102",vm_name="dsm",vm_status="running",vm_type="qemu"} 0
+vm_disk_total{node_name="pve",vm_id="qemu/105",vm_name="macos",vm_status="stopped",vm_type="qemu"} 8.388608e+07
+vm_disk_total{node_name="pve",vm_id="qemu/109",vm_name="pve2",vm_status="stopped",vm_type="qemu"} 4.294967296e+10
+# HELP vm_disk_used vm disk used bytes
+# TYPE vm_disk_used gauge
+vm_disk_used{node_name="pve",vm_id="lxc/100",vm_name="gw",vm_status="running",vm_type="lxc"} 5.321084928e+09
+vm_disk_used{node_name="pve",vm_id="lxc/103",vm_name="cloud",vm_status="running",vm_type="lxc"} 3.616976896e+09
+vm_disk_used{node_name="pve",vm_id="lxc/104",vm_name="test",vm_status="stopped",vm_type="lxc"} 0
+vm_disk_used{node_name="pve",vm_id="lxc/106",vm_name="stock",vm_status="running",vm_type="lxc"} 6.451400704e+09
+vm_disk_used{node_name="pve",vm_id="lxc/107",vm_name="bunker",vm_status="running",vm_type="lxc"} 4.108189696e+09
+vm_disk_used{node_name="pve",vm_id="lxc/108",vm_name="backup",vm_status="stopped",vm_type="lxc"} 0
+vm_disk_used{node_name="pve",vm_id="lxc/110",vm_name="monitor",vm_status="running",vm_type="lxc"} 1.983852544e+09
+vm_disk_used{node_name="pve",vm_id="lxc/111",vm_name="code-server",vm_status="stopped",vm_type="lxc"} 0
+vm_disk_used{node_name="pve",vm_id="qemu/101",vm_name="win11",vm_status="running",vm_type="qemu"} 0
+vm_disk_used{node_name="pve",vm_id="qemu/102",vm_name="dsm",vm_status="running",vm_type="qemu"} 0
+vm_disk_used{node_name="pve",vm_id="qemu/105",vm_name="macos",vm_status="stopped",vm_type="qemu"} 0
+vm_disk_used{node_name="pve",vm_id="qemu/109",vm_name="pve2",vm_status="stopped",vm_type="qemu"} 0
+# HELP vm_disk_write vm disk written bytes
+# TYPE vm_disk_write gauge
+vm_disk_write{node_name="pve",vm_id="lxc/100",vm_name="gw",vm_status="running",vm_type="lxc"} 8.997117952e+09
+vm_disk_write{node_name="pve",vm_id="lxc/103",vm_name="cloud",vm_status="running",vm_type="lxc"} 6.448128e+09
+vm_disk_write{node_name="pve",vm_id="lxc/104",vm_name="test",vm_status="stopped",vm_type="lxc"} 0
+vm_disk_write{node_name="pve",vm_id="lxc/106",vm_name="stock",vm_status="running",vm_type="lxc"} 1.122164736e+09
+vm_disk_write{node_name="pve",vm_id="lxc/107",vm_name="bunker",vm_status="running",vm_type="lxc"} 6.43284992e+08
+vm_disk_write{node_name="pve",vm_id="lxc/108",vm_name="backup",vm_status="stopped",vm_type="lxc"} 0
+vm_disk_write{node_name="pve",vm_id="lxc/110",vm_name="monitor",vm_status="running",vm_type="lxc"} 3.20794624e+09
+vm_disk_write{node_name="pve",vm_id="lxc/111",vm_name="code-server",vm_status="stopped",vm_type="lxc"} 0
+vm_disk_write{node_name="pve",vm_id="qemu/101",vm_name="win11",vm_status="running",vm_type="qemu"} 1.5375104512e+10
+vm_disk_write{node_name="pve",vm_id="qemu/102",vm_name="dsm",vm_status="running",vm_type="qemu"} 8.084635904e+10
+vm_disk_write{node_name="pve",vm_id="qemu/105",vm_name="macos",vm_status="stopped",vm_type="qemu"} 0
+vm_disk_write{node_name="pve",vm_id="qemu/109",vm_name="pve2",vm_status="stopped",vm_type="qemu"} 0
+# HELP vm_info vm info, labels:\nuptime: uptime\ncore: cpu cores\nmemory: max memory bytes\ndisk: max disk bytes
+# TYPE vm_info gauge
+vm_info{core="1",disk="53687091200",memory="536870912",node_name="pve",uptime="0",vm_id="lxc/108",vm_name="backup",vm_status="stopped",vm_type="lxc"} 1
+vm_info{core="2",disk="20957446144",memory="1073741824",node_name="pve",uptime="568682",vm_id="lxc/100",vm_name="gw",vm_status="running",vm_type="lxc"} 1
+vm_info{core="2",disk="20957446144",memory="2147483648",node_name="pve",uptime="277039",vm_id="lxc/107",vm_name="bunker",vm_status="running",vm_type="lxc"} 1
+vm_info{core="2",disk="20957446144",memory="2147483648",node_name="pve",uptime="568667",vm_id="lxc/110",vm_name="monitor",vm_status="running",vm_type="lxc"} 1
+vm_info{core="2",disk="21474836480",memory="2147483648",node_name="pve",uptime="0",vm_id="lxc/111",vm_name="code-server",vm_status="stopped",vm_type="lxc"} 1
+vm_info{core="2",disk="42949672960",memory="2147483648",node_name="pve",uptime="0",vm_id="qemu/109",vm_name="pve2",vm_status="stopped",vm_type="qemu"} 1
+vm_info{core="2",disk="52521566208",memory="2147483648",node_name="pve",uptime="568671",vm_id="lxc/103",vm_name="cloud",vm_status="running",vm_type="lxc"} 1
+vm_info{core="4",disk="0",memory="2147483648",node_name="pve",uptime="568676",vm_id="qemu/102",vm_name="dsm",vm_status="running",vm_type="qemu"} 1
+vm_info{core="4",disk="107374182400",memory="8589934592",node_name="pve",uptime="568681",vm_id="qemu/101",vm_name="win11",vm_status="running",vm_type="qemu"} 1
+vm_info{core="4",disk="20957446144",memory="8589934592",node_name="pve",uptime="568669",vm_id="lxc/106",vm_name="stock",vm_status="running",vm_type="lxc"} 1
+vm_info{core="4",disk="83886080",memory="4294967296",node_name="pve",uptime="0",vm_id="qemu/105",vm_name="macos",vm_status="stopped",vm_type="qemu"} 1
+vm_info{core="8",disk="21474836480",memory="4294967296",node_name="pve",uptime="0",vm_id="lxc/104",vm_name="test",vm_status="stopped",vm_type="lxc"} 1
+# HELP vm_memory_total vm memory total bytes
+# TYPE vm_memory_total gauge
+vm_memory_total{node_name="pve",vm_id="lxc/100",vm_name="gw",vm_status="running",vm_type="lxc"} 1.073741824e+09
+vm_memory_total{node_name="pve",vm_id="lxc/103",vm_name="cloud",vm_status="running",vm_type="lxc"} 2.147483648e+09
+vm_memory_total{node_name="pve",vm_id="lxc/104",vm_name="test",vm_status="stopped",vm_type="lxc"} 4.294967296e+09
+vm_memory_total{node_name="pve",vm_id="lxc/106",vm_name="stock",vm_status="running",vm_type="lxc"} 8.589934592e+09
+vm_memory_total{node_name="pve",vm_id="lxc/107",vm_name="bunker",vm_status="running",vm_type="lxc"} 2.147483648e+09
+vm_memory_total{node_name="pve",vm_id="lxc/108",vm_name="backup",vm_status="stopped",vm_type="lxc"} 5.36870912e+08
+vm_memory_total{node_name="pve",vm_id="lxc/110",vm_name="monitor",vm_status="running",vm_type="lxc"} 2.147483648e+09
+vm_memory_total{node_name="pve",vm_id="lxc/111",vm_name="code-server",vm_status="stopped",vm_type="lxc"} 2.147483648e+09
+vm_memory_total{node_name="pve",vm_id="qemu/101",vm_name="win11",vm_status="running",vm_type="qemu"} 8.589934592e+09
+vm_memory_total{node_name="pve",vm_id="qemu/102",vm_name="dsm",vm_status="running",vm_type="qemu"} 2.147483648e+09
+vm_memory_total{node_name="pve",vm_id="qemu/105",vm_name="macos",vm_status="stopped",vm_type="qemu"} 4.294967296e+09
+vm_memory_total{node_name="pve",vm_id="qemu/109",vm_name="pve2",vm_status="stopped",vm_type="qemu"} 2.147483648e+09
+# HELP vm_memory_used vm memory used bytes
+# TYPE vm_memory_used gauge
+vm_memory_used{node_name="pve",vm_id="lxc/100",vm_name="gw",vm_status="running",vm_type="lxc"} 1.3395968e+08
+vm_memory_used{node_name="pve",vm_id="lxc/103",vm_name="cloud",vm_status="running",vm_type="lxc"} 2.24591872e+08
+vm_memory_used{node_name="pve",vm_id="lxc/104",vm_name="test",vm_status="stopped",vm_type="lxc"} 0
+vm_memory_used{node_name="pve",vm_id="lxc/106",vm_name="stock",vm_status="running",vm_type="lxc"} 2.13520384e+08
+vm_memory_used{node_name="pve",vm_id="lxc/107",vm_name="bunker",vm_status="running",vm_type="lxc"} 4.7833088e+07
+vm_memory_used{node_name="pve",vm_id="lxc/108",vm_name="backup",vm_status="stopped",vm_type="lxc"} 0
+vm_memory_used{node_name="pve",vm_id="lxc/110",vm_name="monitor",vm_status="running",vm_type="lxc"} 1.54722304e+08
+vm_memory_used{node_name="pve",vm_id="lxc/111",vm_name="code-server",vm_status="stopped",vm_type="lxc"} 0
+vm_memory_used{node_name="pve",vm_id="qemu/101",vm_name="win11",vm_status="running",vm_type="qemu"} 2.914164736e+09
+vm_memory_used{node_name="pve",vm_id="qemu/102",vm_name="dsm",vm_status="running",vm_type="qemu"} 8.65832979e+08
+vm_memory_used{node_name="pve",vm_id="qemu/105",vm_name="macos",vm_status="stopped",vm_type="qemu"} 0
+vm_memory_used{node_name="pve",vm_id="qemu/109",vm_name="pve2",vm_status="stopped",vm_type="qemu"} 0
+# HELP vm_netin vm network received bytes
+# TYPE vm_netin gauge
+vm_netin{node_name="pve",vm_id="lxc/100",vm_name="gw",vm_status="running",vm_type="lxc"} 5.472535533e+09
+vm_netin{node_name="pve",vm_id="lxc/103",vm_name="cloud",vm_status="running",vm_type="lxc"} 8.8560206e+07
+vm_netin{node_name="pve",vm_id="lxc/104",vm_name="test",vm_status="stopped",vm_type="lxc"} 0
+vm_netin{node_name="pve",vm_id="lxc/106",vm_name="stock",vm_status="running",vm_type="lxc"} 1.99184256e+08
+vm_netin{node_name="pve",vm_id="lxc/107",vm_name="bunker",vm_status="running",vm_type="lxc"} 7.3020286e+07
+vm_netin{node_name="pve",vm_id="lxc/108",vm_name="backup",vm_status="stopped",vm_type="lxc"} 0
+vm_netin{node_name="pve",vm_id="lxc/110",vm_name="monitor",vm_status="running",vm_type="lxc"} 2.6593953e+08
+vm_netin{node_name="pve",vm_id="lxc/111",vm_name="code-server",vm_status="stopped",vm_type="lxc"} 0
+vm_netin{node_name="pve",vm_id="qemu/101",vm_name="win11",vm_status="running",vm_type="qemu"} 8.12814344e+08
+vm_netin{node_name="pve",vm_id="qemu/102",vm_name="dsm",vm_status="running",vm_type="qemu"} 7.8550641816e+10
+vm_netin{node_name="pve",vm_id="qemu/105",vm_name="macos",vm_status="stopped",vm_type="qemu"} 0
+vm_netin{node_name="pve",vm_id="qemu/109",vm_name="pve2",vm_status="stopped",vm_type="qemu"} 0
+# HELP vm_netout vm network sent bytes
+# TYPE vm_netout gauge
+vm_netout{node_name="pve",vm_id="lxc/100",vm_name="gw",vm_status="running",vm_type="lxc"} 5.107695574e+09
+vm_netout{node_name="pve",vm_id="lxc/103",vm_name="cloud",vm_status="running",vm_type="lxc"} 342094
+vm_netout{node_name="pve",vm_id="lxc/104",vm_name="test",vm_status="stopped",vm_type="lxc"} 0
+vm_netout{node_name="pve",vm_id="lxc/106",vm_name="stock",vm_status="running",vm_type="lxc"} 4.3746561e+07
+vm_netout{node_name="pve",vm_id="lxc/107",vm_name="bunker",vm_status="running",vm_type="lxc"} 2.4411058e+07
+vm_netout{node_name="pve",vm_id="lxc/108",vm_name="backup",vm_status="stopped",vm_type="lxc"} 0
+vm_netout{node_name="pve",vm_id="lxc/110",vm_name="monitor",vm_status="running",vm_type="lxc"} 3.38453086e+08
+vm_netout{node_name="pve",vm_id="lxc/111",vm_name="code-server",vm_status="stopped",vm_type="lxc"} 0
+vm_netout{node_name="pve",vm_id="qemu/101",vm_name="win11",vm_status="running",vm_type="qemu"} 6.7678392e+07
+vm_netout{node_name="pve",vm_id="qemu/102",vm_name="dsm",vm_status="running",vm_type="qemu"} 4.935674257e+09
+vm_netout{node_name="pve",vm_id="qemu/105",vm_name="macos",vm_status="stopped",vm_type="qemu"} 0
+vm_netout{node_name="pve",vm_id="qemu/109",vm_name="pve2",vm_status="stopped",vm_type="qemu"} 0
+# HELP vm_uptime vm uptime
+# TYPE vm_uptime gauge
+vm_uptime{node_name="pve",vm_id="lxc/100",vm_name="gw",vm_status="running",vm_type="lxc"} 568682
+vm_uptime{node_name="pve",vm_id="lxc/103",vm_name="cloud",vm_status="running",vm_type="lxc"} 568671
+vm_uptime{node_name="pve",vm_id="lxc/104",vm_name="test",vm_status="stopped",vm_type="lxc"} 0
+vm_uptime{node_name="pve",vm_id="lxc/106",vm_name="stock",vm_status="running",vm_type="lxc"} 568669
+vm_uptime{node_name="pve",vm_id="lxc/107",vm_name="bunker",vm_status="running",vm_type="lxc"} 277039
+vm_uptime{node_name="pve",vm_id="lxc/108",vm_name="backup",vm_status="stopped",vm_type="lxc"} 0
+vm_uptime{node_name="pve",vm_id="lxc/110",vm_name="monitor",vm_status="running",vm_type="lxc"} 568667
+vm_uptime{node_name="pve",vm_id="lxc/111",vm_name="code-server",vm_status="stopped",vm_type="lxc"} 0
+vm_uptime{node_name="pve",vm_id="qemu/101",vm_name="win11",vm_status="running",vm_type="qemu"} 568681
+vm_uptime{node_name="pve",vm_id="qemu/102",vm_name="dsm",vm_status="running",vm_type="qemu"} 568676
+vm_uptime{node_name="pve",vm_id="qemu/105",vm_name="macos",vm_status="stopped",vm_type="qemu"} 0
+vm_uptime{node_name="pve",vm_id="qemu/109",vm_name="pve2",vm_status="stopped",vm_type="qemu"} 0
