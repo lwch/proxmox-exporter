@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"path/filepath"
 
 	"github.com/kardianos/service"
 	"github.com/lwch/runtime"
@@ -54,12 +55,19 @@ func main() {
 
 	app := app{cfg: cfg}
 
+	cfgDir := *cf
+	if !filepath.IsAbs(cfgDir) {
+		var err error
+		cfgDir, err = filepath.Abs(cfgDir)
+		runtime.Assert(err)
+	}
+
 	svc, err := service.New(&app, &service.Config{
 		Name:         "proxmox-exporter",
 		DisplayName:  "proxmox-exporter",
 		Description:  "proxmox prometheus exporter",
 		UserName:     "root",
-		Arguments:    []string{"-conf", *cf},
+		Arguments:    []string{"-conf", cfgDir},
 		Dependencies: []string{"After=network.target"},
 	})
 	runtime.Assert(err)
