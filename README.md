@@ -2,6 +2,19 @@
 
 proxmox exporter of prometheus
 
+* supported node info
+* supported vm info
+* supported sensors info
+* supported disk info
+
+## how to install
+
+TODO
+
+## grafana dashboard
+
+![grafana](docs/grafana.png)
+
 ## node metrics
 
     # HELP node_cpu_frequency node cpu frequency of each core
@@ -183,3 +196,7 @@ proxmox exporter of prometheus
     # HELP vm_uptime vm uptime
     # TYPE vm_uptime gauge
     vm_uptime{node_name="pve",vm_id="lxc/100",vm_name="gw",vm_status="running",vm_type="lxc"} 322260
+
+## supported
+
+only tested proxmox version 7.2
