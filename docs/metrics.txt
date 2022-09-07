@@ -52,43 +52,35 @@ node_rootfs_total{node_name="pve"} 2.14698033152e+11
 node_rootfs_used{node_name="pve"} 3.378374656e+10
 # HELP node_sensors use sensors command to get device temperature and cpu fan speed
 # TYPE node_sensors gauge
-node_sensors{chip_name="acpitz-acpi-0",feature_name="temp1_input",label_name="temp1",node_name="pve"} -263.2
-node_sensors{chip_name="acpitz-acpi-0",feature_name="temp2_crit",label_name="temp2",node_name="pve"} 119
-node_sensors{chip_name="acpitz-acpi-0",feature_name="temp2_input",label_name="temp2",node_name="pve"} 69
-node_sensors{chip_name="coretemp-isa-0000",feature_name="temp1_crit",label_name="Package id 0",node_name="pve"} 100
-node_sensors{chip_name="coretemp-isa-0000",feature_name="temp1_crit_alarm",label_name="Package id 0",node_name="pve"} 0
-node_sensors{chip_name="coretemp-isa-0000",feature_name="temp1_input",label_name="Package id 0",node_name="pve"} 70
-node_sensors{chip_name="coretemp-isa-0000",feature_name="temp1_max",label_name="Package id 0",node_name="pve"} 100
-node_sensors{chip_name="coretemp-isa-0000",feature_name="temp2_crit",label_name="Core 0",node_name="pve"} 100
-node_sensors{chip_name="coretemp-isa-0000",feature_name="temp2_crit_alarm",label_name="Core 0",node_name="pve"} 0
-node_sensors{chip_name="coretemp-isa-0000",feature_name="temp2_input",label_name="Core 0",node_name="pve"} 68
-node_sensors{chip_name="coretemp-isa-0000",feature_name="temp2_max",label_name="Core 0",node_name="pve"} 100
-node_sensors{chip_name="coretemp-isa-0000",feature_name="temp3_crit",label_name="Core 1",node_name="pve"} 100
-node_sensors{chip_name="coretemp-isa-0000",feature_name="temp3_crit_alarm",label_name="Core 1",node_name="pve"} 0
-node_sensors{chip_name="coretemp-isa-0000",feature_name="temp3_input",label_name="Core 1",node_name="pve"} 70
-node_sensors{chip_name="coretemp-isa-0000",feature_name="temp3_max",label_name="Core 1",node_name="pve"} 100
-node_sensors{chip_name="coretemp-isa-0000",feature_name="temp4_crit",label_name="Core 2",node_name="pve"} 100
-node_sensors{chip_name="coretemp-isa-0000",feature_name="temp4_crit_alarm",label_name="Core 2",node_name="pve"} 0
-node_sensors{chip_name="coretemp-isa-0000",feature_name="temp4_input",label_name="Core 2",node_name="pve"} 68
-node_sensors{chip_name="coretemp-isa-0000",feature_name="temp4_max",label_name="Core 2",node_name="pve"} 100
-node_sensors{chip_name="coretemp-isa-0000",feature_name="temp5_crit",label_name="Core 3",node_name="pve"} 100
-node_sensors{chip_name="coretemp-isa-0000",feature_name="temp5_crit_alarm",label_name="Core 3",node_name="pve"} 0
-node_sensors{chip_name="coretemp-isa-0000",feature_name="temp5_input",label_name="Core 3",node_name="pve"} 68
-node_sensors{chip_name="coretemp-isa-0000",feature_name="temp5_max",label_name="Core 3",node_name="pve"} 100
-node_sensors{chip_name="coretemp-isa-0000",feature_name="temp6_crit",label_name="Core 4",node_name="pve"} 100
-node_sensors{chip_name="coretemp-isa-0000",feature_name="temp6_crit_alarm",label_name="Core 4",node_name="pve"} 0
-node_sensors{chip_name="coretemp-isa-0000",feature_name="temp6_input",label_name="Core 4",node_name="pve"} 66
-node_sensors{chip_name="coretemp-isa-0000",feature_name="temp6_max",label_name="Core 4",node_name="pve"} 100
-node_sensors{chip_name="coretemp-isa-0000",feature_name="temp7_crit",label_name="Core 5",node_name="pve"} 100
-node_sensors{chip_name="coretemp-isa-0000",feature_name="temp7_crit_alarm",label_name="Core 5",node_name="pve"} 0
-node_sensors{chip_name="coretemp-isa-0000",feature_name="temp7_input",label_name="Core 5",node_name="pve"} 66
-node_sensors{chip_name="coretemp-isa-0000",feature_name="temp7_max",label_name="Core 5",node_name="pve"} 100
-node_sensors{chip_name="nvme-pci-3a00",feature_name="temp1_alarm",label_name="Composite",node_name="pve"} 0
-node_sensors{chip_name="nvme-pci-3a00",feature_name="temp1_crit",label_name="Composite",node_name="pve"} 84.85
-node_sensors{chip_name="nvme-pci-3a00",feature_name="temp1_input",label_name="Composite",node_name="pve"} 53.85
-node_sensors{chip_name="nvme-pci-3a00",feature_name="temp1_max",label_name="Composite",node_name="pve"} 82.85
-node_sensors{chip_name="nvme-pci-3a00",feature_name="temp1_min",label_name="Composite",node_name="pve"} -273.15
-node_sensors{chip_name="pch_cannonlake-virtual-0",feature_name="temp1_input",label_name="temp1",node_name="pve"} 66
+node_sensors{feature_name="sensor_critical",node_name="pve",sensor_name="acpitz"} 119
+node_sensors{feature_name="sensor_critical",node_name="pve",sensor_name="coretemp_core_0"} 100
+node_sensors{feature_name="sensor_critical",node_name="pve",sensor_name="coretemp_core_1"} 100
+node_sensors{feature_name="sensor_critical",node_name="pve",sensor_name="coretemp_core_2"} 100
+node_sensors{feature_name="sensor_critical",node_name="pve",sensor_name="coretemp_core_3"} 100
+node_sensors{feature_name="sensor_critical",node_name="pve",sensor_name="coretemp_core_4"} 100
+node_sensors{feature_name="sensor_critical",node_name="pve",sensor_name="coretemp_core_5"} 100
+node_sensors{feature_name="sensor_critical",node_name="pve",sensor_name="coretemp_package_id_0"} 100
+node_sensors{feature_name="sensor_critical",node_name="pve",sensor_name="nvme_composite"} 84.85
+node_sensors{feature_name="sensor_critical",node_name="pve",sensor_name="pch_cannonlake"} 0
+node_sensors{feature_name="sensor_high",node_name="pve",sensor_name="acpitz"} 0
+node_sensors{feature_name="sensor_high",node_name="pve",sensor_name="coretemp_core_0"} 100
+node_sensors{feature_name="sensor_high",node_name="pve",sensor_name="coretemp_core_1"} 100
+node_sensors{feature_name="sensor_high",node_name="pve",sensor_name="coretemp_core_2"} 100
+node_sensors{feature_name="sensor_high",node_name="pve",sensor_name="coretemp_core_3"} 100
+node_sensors{feature_name="sensor_high",node_name="pve",sensor_name="coretemp_core_4"} 100
+node_sensors{feature_name="sensor_high",node_name="pve",sensor_name="coretemp_core_5"} 100
+node_sensors{feature_name="sensor_high",node_name="pve",sensor_name="coretemp_package_id_0"} 100
+node_sensors{feature_name="sensor_high",node_name="pve",sensor_name="nvme_composite"} 82.85
+node_sensors{feature_name="sensor_high",node_name="pve",sensor_name="pch_cannonlake"} 0
+node_sensors{feature_name="temperature",node_name="pve",sensor_name="acpitz"} 100
+node_sensors{feature_name="temperature",node_name="pve",sensor_name="coretemp_core_0"} 100
+node_sensors{feature_name="temperature",node_name="pve",sensor_name="coretemp_core_1"} 92
+node_sensors{feature_name="temperature",node_name="pve",sensor_name="coretemp_core_2"} 100
+node_sensors{feature_name="temperature",node_name="pve",sensor_name="coretemp_core_3"} 96
+node_sensors{feature_name="temperature",node_name="pve",sensor_name="coretemp_core_4"} 93
+node_sensors{feature_name="temperature",node_name="pve",sensor_name="coretemp_core_5"} 98
+node_sensors{feature_name="temperature",node_name="pve",sensor_name="coretemp_package_id_0"} 100
+node_sensors{feature_name="temperature",node_name="pve",sensor_name="nvme_composite"} 59.8
 # HELP node_storage_free node storage free bytes
 # TYPE node_storage_free gauge
 node_storage_free{node_name="pve",storage_name="backup"} 4.97457668096e+11
