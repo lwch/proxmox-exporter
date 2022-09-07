@@ -534,8 +534,7 @@ func (exp *nodeExporter) updateStorage() {
 func (exp *nodeExporter) updateSensors() {
 	sensors, err := host.SensorsTemperatures()
 	if err != nil {
-		logging.Error("get sensors: %v", err)
-		return
+		logging.Warning("get sensors: %v", err)
 	}
 	for _, sensor := range sensors {
 		labels := prometheus.Labels{"sensor_name": sensor.SensorKey}
