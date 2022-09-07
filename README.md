@@ -8,7 +8,7 @@ supported:
 
 * node info
 * node metrics
-* node temperature info(sensors command)
+* node temperature info
 * node disk info(smartctl infos)
 * vm info
 * vm metrics

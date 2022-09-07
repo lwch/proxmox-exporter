@@ -8,7 +8,7 @@ proxmox-exporter是一个基于[prometheus](https://prometheus.io/)的导出程�
 
 * 节点信息
 * 节点监控
-* 节点温度数据（依赖于sensors命令）
+* 节点温度数据
 * 节点磁盘数据（smartctl部分数据）
 * 虚拟机信息
 * 虚拟机监控
