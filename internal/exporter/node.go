@@ -3,7 +3,6 @@ package exporter
 import (
 	"bufio"
 	"exporter/proxmox"
-	"exporter/sensors"
 	"fmt"
 	"os"
 	"sort"
@@ -14,6 +13,7 @@ import (
 	"github.com/jaypipes/ghw"
 	"github.com/lwch/logging"
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/shirou/gopsutil/v3/host"
 )
 
 type nodeExporter struct {
@@ -223,7 +223,7 @@ type: storage type`,
 		Name:        "sensors",
 		Help:        "use sensors command to get device temperature and cpu fan speed",
 		ConstLabels: labels,
-	}, []string{"chip_name", "label_name", "feature_name"})
+	}, []string{"sensor_name", "feature_name"})
 	// network
 	exp.netin = prometheus.NewGauge(prometheus.GaugeOpts{
 		Namespace:   namespace,
@@ -532,20 +532,18 @@ func (exp *nodeExporter) updateStorage() {
 }
 
 func (exp *nodeExporter) updateSensors() {
-	sensors, err := sensors.Get()
+	sensors, err := host.SensorsTemperatures()
 	if err != nil {
-		logging.Error("get sensors: %v", err)
-		return
+		logging.Warning("get sensors: %v", err)
 	}
 	for _, sensor := range sensors {
-		labels := prometheus.Labels{"chip_name": sensor.Chip}
-		for label, value := range sensor.Features {
-			labels["label_name"] = label
-			for feature, value := range value {
-				labels["feature_name"] = feature
-				exp.sensors.With(labels).Set(value)
-			}
-		}
+		labels := prometheus.Labels{"sensor_name": sensor.SensorKey}
+		labels["feature_name"] = "temperature"
+		exp.sensors.With(labels).Set(sensor.Temperature)
+		labels["feature_name"] = "sensor_high"
+		exp.sensors.With(labels).Set(sensor.High)
+		labels["feature_name"] = "sensor_critical"
+		exp.sensors.With(labels).Add(sensor.Critical)
 	}
 }
 
