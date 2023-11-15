@@ -41,9 +41,12 @@ func Load(dir string, debug bool) *Configure {
 		}
 	}
 
+	cli := proxmox.New(fmt.Sprintf("https://%s:8006", ip),
+		cfg.Api.User, cfg.Api.Token, 5*time.Second)
+	cli.SetDebug(debug)
+
 	return &Configure{
 		Listen: cfg.Listen,
-		Cli: proxmox.New(fmt.Sprintf("https://%s:8006", ip),
-			cfg.Api.User, cfg.Api.Token, 5*time.Second),
+		Cli:    cli,
 	}
 }

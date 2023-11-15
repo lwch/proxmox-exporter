@@ -413,7 +413,7 @@ func (exp *nodeExporter) updateInfo(status proxmox.NodeStatus) {
 		"sockets":        fmt.Sprintf("%d", status.CpuInfo.Sockets),
 		"cores":          fmt.Sprintf("%d", status.CpuInfo.Cores),
 		"threads":        fmt.Sprintf("%d", status.CpuInfo.Threads),
-		"mhz":            status.CpuInfo.Frequency,
+		"mhz":            fmt.Sprintf("%d", status.CpuInfo.Frequency),
 		"kernel_version": status.KernelVersion,
 		"pve_version":    status.PveVersion,
 	}).Inc()

@@ -24,7 +24,7 @@ type NodeStatus struct {
 		Sockets       uint64 `json:"sockets"` // CPU sockets
 		Cores         uint64 `json:"cores"`   // CPU cores
 		Threads       uint64 `json:"cpus"`    // CPU threads
-		Frequency     string `json:"mhz"`     // CPU frequency
+		Frequency     int    `json:"mhz"`     // CPU frequency
 		UserFrequency int    `json:"user_hz"` // CPU limit frequency?
 	} `json:"cpuinfo"`
 	Memory        usage   `json:"memory"`     // Physical memory info
