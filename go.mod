@@ -3,7 +3,8 @@ module exporter
 go 1.18
 
 require (
-	github.com/anatol/smart.go v0.0.0-20220929205047-336d113af2c1
+	github.com/anatol/smart.go v0.0.0-20230705044831-c3b27137baa3
+	github.com/dswarbrick/smart v0.0.0-20230625164221-6fe037e2b05f
 	github.com/jaypipes/ghw v0.9.0
 	github.com/kardianos/service v1.2.1
 	github.com/lwch/logging v0.0.0-20220322084100-ec48185d95ab
@@ -33,7 +34,7 @@ require (
 	github.com/tklauser/go-sysconf v0.3.10 // indirect
 	github.com/tklauser/numcpus v0.5.0 // indirect
 	github.com/yusufpapurcu/wmi v1.2.2 // indirect
-	golang.org/x/sys v0.0.0-20221006211917-84dc82d7e875 // indirect
+	golang.org/x/sys v0.9.0 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	howett.net/plist v1.0.0 // indirect
