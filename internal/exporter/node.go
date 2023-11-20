@@ -613,7 +613,7 @@ func (exp *nodeExporter) updateSmart() {
 			labels["type"] = "sata"
 			for _, attr := range page.Attrs {
 				switch attr.Name {
-				case "Airflow_Temperature_Cel":
+				case "Temperature_Celsius":
 					current, _, _, _, err := attr.ParseAsTemperature()
 					if err != nil {
 						logging.Error("get temperature [%s]: %v", disk.Name, err)
@@ -700,7 +700,7 @@ func (exp *nodeExporter) readMegaRaidDevice(m *megaraid.MegasasIoctl, host uint1
 	}
 	for _, attr := range smart.Attrs {
 		switch attr.Id {
-		case 190: // Airflow_Temperature_Cel
+		case 194: // Temperature_Celsius
 			exp.smartTemperature.With(labels).Set(float64(attr.Value))
 		case 242: // Total_LBAs_Read
 			exp.smartReaden.With(labels).Set(float64(attr.Value))
