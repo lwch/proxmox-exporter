@@ -2,6 +2,8 @@ package exporter
 
 import (
 	"bufio"
+	"bytes"
+	"encoding/binary"
 	"exporter/proxmox"
 	"fmt"
 	"os"
@@ -10,6 +12,10 @@ import (
 	"strings"
 
 	"github.com/anatol/smart.go"
+	"github.com/dswarbrick/smart/ata"
+	"github.com/dswarbrick/smart/megaraid"
+	"github.com/dswarbrick/smart/scsi"
+	"github.com/dswarbrick/smart/utils"
 	"github.com/jaypipes/ghw"
 	"github.com/lwch/logging"
 	"github.com/prometheus/client_golang/prometheus"
@@ -624,6 +630,86 @@ func (exp *nodeExporter) updateSmart() {
 					exp.smartPowerCycles.With(labels).Set(float64(attr.ValueRaw))
 				}
 			}
+		}
+	}
+
+	exp.updateMegaRaid()
+}
+
+func (exp *nodeExporter) updateMegaRaid() {
+	if !exp.hasMegaRaid() {
+		return
+	}
+	m, err := megaraid.CreateMegasasIoctl()
+	if err != nil {
+		logging.Error("create megaraid: %v", err)
+		return
+	}
+	defer m.Close()
+	for _, dev := range m.ScanDevices() {
+		var host uint16
+		var disk uint8
+		_, err = fmt.Sscanf(dev.Name, "megaraid%d_%d", &host, &disk)
+		if err != nil {
+			logging.Error("parse megaraid: %v", err)
+			continue
+		}
+		exp.readMegaRaidDevice(&m, host, disk)
+	}
+}
+
+func (exp *nodeExporter) hasMegaRaid() bool {
+	f, err := os.Open("/proc/devices")
+	if err != nil {
+		return false
+	}
+	defer f.Close()
+	scanner := bufio.NewScanner(f)
+	for scanner.Scan() {
+		if strings.HasSuffix(scanner.Text(), "megaraid_sas_ioctl") {
+			return true
+		}
+	}
+	return false
+}
+
+func (exp *nodeExporter) readMegaRaidDevice(m *megaraid.MegasasIoctl, host uint16, disk uint8) {
+	labels := prometheus.Labels{
+		"device": fmt.Sprintf("megaraid%d_%d", host, disk),
+		"type":   "raid",
+	}
+
+	cdb := scsi.CDB16{scsi.SCSI_ATA_PASSTHRU_16}
+	cdb[1] = 0x08                // ATA protocol (4 << 1, PIO data-in)
+	cdb[2] = 0x0e                // BYT_BLOK = 1, T_LENGTH = 2, T_DIR = 1
+	cdb[4] = ata.SMART_READ_DATA // feature LSB
+	cdb[10] = 0x4f               // low lba_mid
+	cdb[12] = 0xc2               // low lba_high
+	cdb[14] = ata.ATA_SMART      // command
+	buf := make([]byte, 512)
+	err := m.PassThru(host, disk, cdb[:], buf, scsi.SG_DXFER_FROM_DEV)
+	if err != nil {
+		logging.Error("read megaraid device[%s]: %v", labels["device"], err)
+		return
+	}
+	var smart ata.SmartPage
+	err = binary.Read(bytes.NewBuffer(buf[:362]), utils.NativeEndian, &smart)
+	if err != nil {
+		logging.Error("read megaraid device[%s]: %v", labels["device"], err)
+		return
+	}
+	for _, attr := range smart.Attrs {
+		switch attr.Id {
+		case 190: // Airflow_Temperature_Cel
+			exp.smartTemperature.With(labels).Set(float64(attr.Value))
+		case 242: // Total_LBAs_Read
+			exp.smartReaden.With(labels).Set(float64(attr.Value))
+		case 241: // Total_LBAs_Written
+			exp.smartWritten.With(labels).Set(float64(attr.Value))
+		case 9: // Power_On_Hours
+			exp.smartPowerOnHours.With(labels).Set(float64(attr.Value))
+		case 12: // Power_Cycle_Count
+			exp.smartPowerCycles.With(labels).Set(float64(attr.Value))
 		}
 	}
 }
