@@ -698,18 +698,29 @@ func (exp *nodeExporter) readMegaRaidDevice(m *megaraid.MegasasIoctl, host uint1
 		logging.Error("read megaraid device[%s]: %v", labels["device"], err)
 		return
 	}
+
+	rawValue := func(bytes [6]byte) uint64 {
+		var r uint64
+		for i := 0; i < len(bytes); i++ {
+			b := bytes[len(bytes)-i-1]
+			r <<= 8
+			r |= uint64(b)
+		}
+		return r
+	}
+
 	for _, attr := range smart.Attrs {
 		switch attr.Id {
 		case 194: // Temperature_Celsius
 			exp.smartTemperature.With(labels).Set(float64(attr.Value))
 		case 242: // Total_LBAs_Read
-			exp.smartReaden.With(labels).Set(float64(attr.Value))
+			exp.smartReaden.With(labels).Set(float64(rawValue(attr.VendorBytes)))
 		case 241: // Total_LBAs_Written
-			exp.smartWritten.With(labels).Set(float64(attr.Value))
+			exp.smartWritten.With(labels).Set(float64(rawValue(attr.VendorBytes)))
 		case 9: // Power_On_Hours
-			exp.smartPowerOnHours.With(labels).Set(float64(attr.Value))
+			exp.smartPowerOnHours.With(labels).Set(float64(rawValue(attr.VendorBytes)))
 		case 12: // Power_Cycle_Count
-			exp.smartPowerCycles.With(labels).Set(float64(attr.Value))
+			exp.smartPowerCycles.With(labels).Set(float64(rawValue(attr.VendorBytes)))
 		}
 	}
 }
